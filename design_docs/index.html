@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Tracker Dashboard</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for aesthetic icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom styles to enhance the mechanical/grid feel */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Simulated Grid/Circuit background on the main content area */
+        .grid-bg {
+            background-image: linear-gradient(to right, #2d3748 1px, transparent 1px),
+                              linear-gradient(to bottom, #2d3748 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        /* Custom glow effect for the red accent */
+        .red-glow {
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.6), 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+        /* Pulsating animation for active status */
+        @keyframes pulse-red {
+            0%, 100% { opacity: 0.8; box-shadow: 0 0 8px rgba(239, 68, 68, 0.8); }
+            50% { opacity: 1; box-shadow: 0 0 15px rgba(239, 68, 68, 1); }
+        }
+        .active-pulse {
+            animation: pulse-red 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen text-gray-100 antialiased">
+
+    <div class="flex flex-col lg:flex-row">
+        
+        <!-- Sidebar/Command Panel -->
+        <aside class="w-full lg:w-64 bg-gray-900 border-b lg:border-r border-red-600/50 p-6 shadow-xl flex flex-row lg:flex-col justify-between lg:justify-start overflow-x-auto lg:overflow-x-visible">
+            
+            <h1 class="text-3xl font-extrabold text-red-500 tracking-widest uppercase mb-6 hidden lg:block">
+                <i data-lucide="wrench" class="inline-block mr-2 w-6 h-6"></i>
+                <span class="red-glow p-1">SYS/INTL</span>
+            </h1>
+
+            <div class="flex lg:flex-col space-x-4 lg:space-x-0 lg:space-y-4 text-sm font-medium">
+                <a href="#" class="flex items-center p-3 rounded-lg bg-red-700/80 text-white shadow-lg shadow-red-500/40 border border-red-500 transition hover:bg-red-800 flex-shrink-0">
+                    <i data-lucide="gauge" class="w-4 h-4 mr-3"></i>
+                    DASHBOARD
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition border border-transparent hover:border-gray-600 flex-shrink-0">
+                    <i data-lucide="book-open-text" class="w-4 h-4 mr-3 text-gray-400"></i>
+                    JOURNAL (F01)
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition border border-transparent hover:border-gray-600 flex-shrink-0">
+                    <i data-lucide="settings" class="w-4 h-4 mr-3 text-gray-400"></i>
+                    SETTINGS (UAC)
+                </a>
+                <div class="flex-grow lg:flex-grow-0"></div>
+                <a href="#" class="flex items-center p-3 rounded-lg text-red-400 hover:text-red-300 transition lg:mt-12 flex-shrink-0">
+                    <i data-lucide="log-out" class="w-4 h-4 mr-3"></i>
+                    LOGOUT
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content -->
+        <main class="flex-1 p-4 sm:p-8 lg:p-10 grid-bg">
+            
+            <!-- Welcome Banner and Primary Action -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-4 border-b-2 border-red-600/50">
+                <h2 class="text-4xl font-light text-white uppercase tracking-wider">
+                    <span class="font-bold text-red-500">CONTROL</span> PANEL
+                </h2>
+                <button id="newEntryButton" class="mt-4 md:mt-0 px-6 py-3 text-lg font-bold text-white bg-green-600 rounded-md active-pulse border-2 border-green-400 transition hover:bg-green-700 hover:shadow-lg shadow-green-500/50 uppercase">
+                    <i data-lucide="plus" class="inline-block mr-2 w-5 h-5"></i>
+                    New Installation Entry
+                </button>
+            </div>
+
+            <!-- SECTION 1: KEY METRICS GRID -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+                
+                <!-- Metric Card Template -->
+                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs uppercase text-gray-400 tracking-widest">Total Installs (All-Time)</p>
+                        <i data-lucide="history" class="w-5 h-5 text-gray-500"></i>
+                    </div>
+                    <p class="text-5xl font-extrabold mt-1 text-white font-mono">1,492</p>
+                    <p class="text-sm mt-1 text-green-400">+1.2% vs Last Period</p>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs uppercase text-gray-400 tracking-widest">Installs This Month</p>
+                        <i data-lucide="calendar" class="w-5 h-5 text-gray-500"></i>
+                    </div>
+                    <p class="text-5xl font-extrabold mt-1 text-red-500 font-mono">87</p>
+                    <p class="text-sm mt-1 text-red-400">Target: 100</p>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs uppercase text-gray-400 tracking-widest">Avg. Per Day (Active)</p>
+                        <i data-lucide="trending-up" class="w-5 h-5 text-gray-500"></i>
+                    </div>
+                    <p class="text-5xl font-extrabold mt-1 text-white font-mono">2.8</p>
+                    <p class="text-sm mt-1 text-yellow-400">Optimal Range</p>
+                </div>
+                
+                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs uppercase text-gray-400 tracking-widest">Active System Status</p>
+                        <i data-lucide="cpu" class="w-5 h-5 text-gray-500"></i>
+                    </div>
+                    <p class="text-5xl font-extrabold mt-1 text-green-400 font-mono">ONLINE</p>
+                    <p class="text-sm mt-1 text-gray-400">Uptime: 45 Days</p>
+                </div>
+            </div>
+
+            <!-- SECTION 2: DAILY PROGRESS AND CHART -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Daily Progress/Target Tracking (Mechanical/Gauge Style) -->
+                <div class="lg:col-span-1 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
+                    <h3 class="text-xl font-bold mb-6 text-red-500 uppercase tracking-wide">
+                        <i data-lucide="bar-chart-3" class="inline-block mr-2 w-5 h-5"></i>
+                        DAILY TARGET MODULE
+                    </h3>
+                    
+                    <div class="flex justify-between items-center text-sm mb-2">
+                        <span class="text-gray-400">CURRENT:</span>
+                        <span class="text-white font-bold text-lg font-mono">3 / 5</span>
+                    </div>
+
+                    <!-- Mechanical Progress Bar (Simulated) -->
+                    <div class="w-full h-10 bg-gray-900 border-4 border-gray-700 p-1 mb-4 relative">
+                        <!-- Background texture -->
+                        <div class="absolute inset-0 bg-black/50"></div>
+                        <!-- Progress bar (Red heat indicator) -->
+                        <div class="h-full bg-red-600 transition-all duration-700" style="width: 60%; box-shadow: 0 0 5px rgba(239, 68, 68, 0.8);"></div>
+                        <!-- Target line indicator -->
+                        <div class="absolute h-full w-0.5 bg-green-400 left-[calc(100%*(5/5))] -ml-0.5"></div>
+                    </div>
+
+                    <div class="text-center space-y-2">
+                        <p class="text-4xl font-extrabold text-red-500 font-mono">60%</p>
+                        <p class="text-sm text-gray-400">Status: On Track (Target: 5)</p>
+                    </div>
+
+                    <button class="w-full mt-4 p-3 text-sm font-bold text-white bg-red-600 rounded-md active-pulse border-2 border-red-400 transition hover:bg-red-700 shadow-md shadow-red-500/50 uppercase">
+                        View Target Settings
+                    </button>
+                </div>
+
+                <!-- Daily Installation Chart Placeholder -->
+                <div class="lg:col-span-2 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
+                    <h3 class="text-xl font-bold mb-4 text-white uppercase tracking-wide">
+                        <i data-lucide="activity" class="inline-block mr-2 w-5 h-5 text-red-500"></i>
+                        WEEKLY PERFORMANCE CHART
+                    </h3>
+                    <div class="h-72 bg-gray-900 border-2 border-gray-700 p-4 flex items-center justify-center font-mono text-gray-500 text-lg">
+                        [DATA VISUALIZATION: LINE CHART PLACEHOLDER]
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Data refresh rate: 1 minute (Simulated)</p>
+                </div>
+            </div>
+
+            <!-- SECTION 3: RECENT ACTIVITY / JOURNAL PREVIEW -->
+            <div class="mt-8 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
+                <h3 class="text-xl font-bold mb-4 text-white uppercase tracking-wide">
+                    <i data-lucide="list-checks" class="inline-block mr-2 w-5 h-5 text-red-500"></i>
+                    RECENT INSTALLATION LOGS
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700/50">
+                        <thead class="bg-gray-900">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                    Customer / Location
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                    Time Logged
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">
+                                    Duration
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700/50">
+                            <!-- Entry 1 (High contrast for active/recent) -->
+                            <tr class="hover:bg-gray-700/50 transition bg-gray-900 border-l-4 border-red-500">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-semibold text-white">Project: Citadel Tower B</div>
+                                    <div class="text-xs text-gray-400 font-mono">40.7128, -74.0060 (NYC)</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-400 font-mono">
+                                    15:30 - 17:15 (Today)
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white hidden sm:table-cell">
+                                    1h 45m
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="text-red-500 hover:text-red-400 transition p-2"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Entry 2 -->
+                            <tr class="hover:bg-gray-700/50 transition">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-semibold text-white">Customer: A. Robertson</div>
+                                    <div class="text-xs text-gray-400 font-mono">250 Maple Dr, Suburbia</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 font-mono">
+                                    Yesterday, 10:00
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 hidden sm:table-cell">
+                                    2h 10m
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="text-red-500 hover:text-red-400 transition p-2"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+
+                             <!-- Entry 3 -->
+                            <tr class="hover:bg-gray-700/50 transition">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-semibold text-white">Alpha Warehouse System 3</div>
+                                    <div class="text-xs text-gray-400 font-mono">GPS Locked, Site B-7</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 font-mono">
+                                    3 days ago
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 hidden sm:table-cell">
+                                    0h 55m
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="text-red-500 hover:text-red-400 transition p-2"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Script to initialize Lucide icons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

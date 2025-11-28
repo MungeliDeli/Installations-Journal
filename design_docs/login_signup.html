@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Access Terminal</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for aesthetic icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      /* Custom styles carried over from the dashboard */
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .red-glow {
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.6),
+          0 0 20px rgba(239, 68, 68, 0.4);
+      }
+      .active-pulse {
+        animation: pulse-red 2s infinite;
+      }
+      @keyframes pulse-red {
+        0%,
+        100% {
+          opacity: 0.8;
+          box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+        }
+        50% {
+          opacity: 1;
+          box-shadow: 0 0 15px rgba(239, 68, 68, 1);
+        }
+      }
+
+      /* Specific input styling for the mechanical look */
+      .mech-input {
+        background-color: #1f2937; /* Gray-800 */
+        border: 2px solid #4b5563; /* Gray-600 */
+        color: #f3f4f6; /* White */
+        padding: 0.75rem;
+        transition: all 0.2s;
+      }
+      .mech-input:focus {
+        border-color: #dc2626; /* Red-600 */
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.5); /* Inner red glow */
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-900 min-h-screen text-gray-100 antialiased flex items-center justify-center p-4"
+  >
+    <!-- System Access Terminal Card -->
+    <div
+      class="w-full max-w-md bg-gray-800 border-2 border-red-600/50 shadow-2xl shadow-black/50 p-8 sm:p-10 rounded-lg"
+    >
+      <!-- Header / Logo -->
+      <div class="text-center mb-8 pb-4 border-b border-red-600/30">
+        <i
+          data-lucide="lock"
+          class="w-10 h-10 mx-auto text-red-500 red-glow"
+        ></i>
+        <h1
+          class="text-3xl font-extrabold text-white uppercase tracking-widest mt-3"
+        >
+          <span class="text-red-500">ACCESS</span> REQUIRED
+        </h1>
+        <p class="text-sm text-gray-400 font-mono mt-1">
+          INDUSTRIAL TRACKER V.1.0
+        </p>
+      </div>
+
+      <!-- Tab Switcher (Login / Sign Up) -->
+      <div class="flex mb-8 border-b-2 border-gray-700">
+        <button
+          id="loginTab"
+          onclick="switchMode('login')"
+          class="flex-1 p-3 text-lg font-bold uppercase transition duration-200 border-b-4 border-transparent"
+          data-mode="login"
+        >
+          Login
+        </button>
+        <button
+          id="signupTab"
+          onclick="switchMode('signup')"
+          class="flex-1 p-3 text-lg font-bold uppercase transition duration-200 border-b-4 border-transparent"
+          data-mode="signup"
+        >
+          Sign Up
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="space-y-6" style="display: block">
+        <div>
+          <label
+            for="login-email"
+            class="block text-sm font-medium text-gray-300 mb-2 uppercase tracking-wider"
+            >EMAIL ADDRESS</label
+          >
+          <input
+            type="email"
+            id="login-email"
+            class="w-full mech-input rounded-sm font-mono"
+            placeholder="user_id@sys.com"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            for="login-password"
+            class="block text-sm font-medium text-gray-300 mb-2 uppercase tracking-wider"
+            >SECURITY KEY (PASSWORD)</label
+          >
+          <input
+            type="password"
+            id="login-password"
+            class="w-full mech-input rounded-sm font-mono"
+            placeholder="********"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 text-lg font-bold text-white bg-red-600 rounded-md active-pulse border-2 border-red-400 transition hover:bg-red-700 shadow-md shadow-red-500/50 uppercase tracking-widest"
+        >
+          <i data-lucide="unlock" class="inline-block w-5 h-5 mr-2"></i>
+          SYSTEM LOGIN
+        </button>
+
+        <div class="text-center pt-2">
+          <!-- Future Password Reset Feature Placeholder -->
+          <a
+            href="#"
+            class="text-red-400 hover:text-red-300 text-sm transition"
+          >
+            [ERR: PWD RESET OFFLINE]
+          </a>
+        </div>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="signupForm" class="space-y-6" style="display: none">
+        <div>
+          <label
+            for="signup-email"
+            class="block text-sm font-medium text-gray-300 mb-2 uppercase tracking-wider"
+            >NEW USER EMAIL</label
+          >
+          <input
+            type="email"
+            id="signup-email"
+            class="w-full mech-input rounded-sm font-mono"
+            placeholder="new_user@sys.com"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            for="signup-password"
+            class="block text-sm font-medium text-gray-300 mb-2 uppercase tracking-wider"
+            >CREATE SECURITY KEY</label
+          >
+          <input
+            type="password"
+            id="signup-password"
+            class="w-full mech-input rounded-sm font-mono"
+            placeholder="********"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            for="signup-confirm"
+            class="block text-sm font-medium text-gray-300 mb-2 uppercase tracking-wider"
+            >CONFIRM KEY</label
+          >
+          <input
+            type="password"
+            id="signup-confirm"
+            class="w-full mech-input rounded-sm font-mono"
+            placeholder="********"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 text-lg font-bold text-white bg-green-600 rounded-md border-2 border-green-400 transition hover:bg-green-700 shadow-md shadow-green-500/50 uppercase tracking-widest"
+        >
+          <i data-lucide="user-plus" class="inline-block w-5 h-5 mr-2"></i>
+          INITIATE USER
+        </button>
+      </form>
+    </div>
+
+    <!-- Script to initialize Lucide icons and handle form switching -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
+        switchMode("login"); // Initialize to login view
+      });
+
+      function switchMode(mode) {
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+        const loginTab = document.getElementById("loginTab");
+        const signupTab = document.getElementById("signupTab");
+
+        if (mode === "login") {
+          loginForm.style.display = "block";
+          signupForm.style.display = "none";
+          loginTab.classList.add("border-red-600", "text-red-500");
+          loginTab.classList.remove("border-transparent", "text-gray-400");
+          signupTab.classList.remove("border-red-600", "text-red-500");
+          signupTab.classList.add("border-transparent", "text-gray-400");
+        } else if (mode === "signup") {
+          loginForm.style.display = "none";
+          signupForm.style.display = "block";
+          signupTab.classList.add("border-red-600", "text-red-500");
+          signupTab.classList.remove("border-transparent", "text-gray-400");
+          loginTab.classList.remove("border-red-600", "text-red-500");
+          loginTab.classList.add("border-transparent", "text-gray-400");
+        }
+      }
+    </script>
+  </body>
+</html>

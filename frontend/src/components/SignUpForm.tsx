@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../hooks/useAuth";
 import { useAuth } from "../contexts/AuthContext";
+import { validateSignupForm } from "../utils/validation";
 
 export default function SignUpForm() {
   const [name, setName] = useState("");
@@ -12,10 +13,27 @@ export default function SignUpForm() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const signupMutation = useSignup();
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const clearFieldError = (field: string) => {
+    setFieldErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[field];
+      return newErrors;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
+
+    // Frontend validation
+    const validation = validateSignupForm(name, email, phone, password);
+    if (!validation.isValid) {
+      setFieldErrors(validation.errors);
+      return;
+    }
 
     try {
       const result = await signupMutation.mutateAsync({
@@ -31,7 +49,24 @@ export default function SignUpForm() {
         navigate("/dashboard");
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "Registration failed");
+      const backend = err.response?.data;
+
+      // Field-level errors from backend
+      if (backend?.errors) {
+        const grouped: Record<string, string> = {};
+
+        backend.errors.forEach((e: any) => {
+          // Take the first error message for each field
+          if (!grouped[e.field]) {
+            grouped[e.field] = e.message;
+          }
+        });
+
+        setFieldErrors(grouped);
+      }
+
+      // Global error banner
+      setError(backend?.message || "Registration failed");
     }
   };
 
@@ -44,11 +79,23 @@ export default function SignUpForm() {
         <input
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            clearFieldError("name");
+          }}
           placeholder=""
-          className="bg-(--color-background) border border-(--color-border) rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)] placeholder:text-(--color-text-muted)"
+          className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
+            fieldErrors.name
+              ? "border-(--color-accent-red)"
+              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+          }`}
           required
         />
+        {fieldErrors.name && (
+          <span className="text-(--color-accent-red) text-xs mt-1">
+            {fieldErrors.name}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -58,11 +105,23 @@ export default function SignUpForm() {
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            clearFieldError("email");
+          }}
           placeholder="new_user@sys.com"
-          className="bg-(--color-background) border border-(--color-border) rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)] placeholder:text-(--color-text-muted)"
+          className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
+            fieldErrors.email
+              ? "border-(--color-accent-red)"
+              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+          }`}
           required
         />
+        {fieldErrors.email && (
+          <span className="text-(--color-accent-red) text-xs mt-1">
+            {fieldErrors.email}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -72,11 +131,23 @@ export default function SignUpForm() {
         <input
           type="tel"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => {
+            setPhone(e.target.value);
+            clearFieldError("phone");
+          }}
           placeholder=""
-          className="bg-(--color-background) border border-(--color-border) rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)] placeholder:text-(--color-text-muted)"
+          className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
+            fieldErrors.phone
+              ? "border-(--color-accent-red)"
+              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+          }`}
           required
         />
+        {fieldErrors.phone && (
+          <span className="text-(--color-accent-red) text-xs mt-1">
+            {fieldErrors.phone}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -86,11 +157,23 @@ export default function SignUpForm() {
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            clearFieldError("password");
+          }}
           placeholder=""
-          className="bg-(--color-background) border border-(--color-border) rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)] placeholder:text-(--color-text-muted)"
+          className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
+            fieldErrors.password
+              ? "border-(--color-accent-red)"
+              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+          }`}
           required
         />
+        {fieldErrors.password && (
+          <span className="text-(--color-accent-red) text-xs mt-1">
+            {fieldErrors.password}
+          </span>
+        )}
       </div>
 
       <button
@@ -114,7 +197,7 @@ export default function SignUpForm() {
           <line x1="19" y1="8" x2="19" y2="14" />
           <line x1="22" y1="11" x2="16" y2="11" />
         </svg>
-        INITIATE USER
+        {signupMutation.isPending ? "CREATING USER..." : "INITIATE USER"}
       </button>
 
       {error && (

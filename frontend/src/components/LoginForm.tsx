@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useAuth";
 import { useAuth } from "../contexts/AuthContext";
+import { validateLoginForm } from "../utils/validation";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const { login } = useAuth();
   const loginMutation = useLogin();
@@ -14,6 +16,14 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
+
+    // Frontend validation
+    const validation = validateLoginForm(email, password);
+    if (!validation.isValid) {
+      setFieldErrors(validation.errors);
+      return;
+    }
 
     try {
       const result = await loginMutation.mutateAsync({ email, password });
@@ -24,7 +34,7 @@ export default function LoginForm() {
         navigate("/dashboard");
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || "[ERR: PWD RESET OFFLINE]");
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -37,11 +47,30 @@ export default function LoginForm() {
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            // Clear error when user types
+            if (fieldErrors.email) {
+              setFieldErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.email;
+                return newErrors;
+              });
+            }
+          }}
           placeholder="user_id@sys.com"
-          className="bg-(--color-background) border border-(--color-border) rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)] placeholder:text-(--color-text-muted)"
+          className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
+            fieldErrors.email
+              ? "border-(--color-accent-red)"
+              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+          }`}
           required
         />
+        {fieldErrors.email && (
+          <span className="text-(--color-accent-red) text-xs mt-1">
+            {fieldErrors.email}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -51,11 +80,30 @@ export default function LoginForm() {
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            // Clear error when user types
+            if (fieldErrors.password) {
+              setFieldErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.password;
+                return newErrors;
+              });
+            }
+          }}
           placeholder=""
-          className="bg-(--color-background) border border-(--color-border) rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)] placeholder:text-(--color-text-muted)"
+          className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
+            fieldErrors.password
+              ? "border-(--color-accent-red)"
+              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+          }`}
           required
         />
+        {fieldErrors.password && (
+          <span className="text-(--color-accent-red) text-xs mt-1">
+            {fieldErrors.password}
+          </span>
+        )}
       </div>
 
       <button
@@ -77,7 +125,7 @@ export default function LoginForm() {
           <rect x="5" y="11" width="14" height="10" rx="2" ry="2" />
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
-        SYSTEM LOGIN
+        {loginMutation.isPending ? "LOGGING IN..." : "SYSTEM LOGIN"}
       </button>
 
       {error && (

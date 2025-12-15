@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,250 +14,802 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
         /* Simulated Grid/Circuit background on the main content area */
         .grid-bg {
             background-image: linear-gradient(to right, #2d3748 1px, transparent 1px),
-                              linear-gradient(to bottom, #2d3748 1px, transparent 1px);
+                linear-gradient(to bottom, #2d3748 1px, transparent 1px);
             background-size: 20px 20px;
         }
+
         /* Custom glow effect for the red accent */
         .red-glow {
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.6), 0 0 20px rgba(239, 68, 68, 0.4);
         }
+
         /* Pulsating animation for active status */
         @keyframes pulse-red {
-            0%, 100% { opacity: 0.8; box-shadow: 0 0 8px rgba(239, 68, 68, 0.8); }
-            50% { opacity: 1; box-shadow: 0 0 15px rgba(239, 68, 68, 1); }
+
+            0%,
+            100% {
+                opacity: 0.8;
+                box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+            }
+
+            50% {
+                opacity: 1;
+                box-shadow: 0 0 15px rgba(239, 68, 68, 1);
+            }
         }
+
         .active-pulse {
             animation: pulse-red 2s infinite;
         }
+
+        /* Mechanical Input Style */
+        .mech-input {
+            background-color: #1f2937;
+            /* Gray-800 */
+            border: 2px solid #4b5563;
+            /* Gray-600 */
+            color: #f3f4f6;
+            /* White */
+            padding: 0.75rem;
+            transition: all 0.2s;
+            font-family: 'monospace', 'Inter', sans-serif;
+        }
+
+        .mech-input:focus {
+            border-color: #dc2626;
+            /* Red-600 */
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.5);
+            /* Inner red glow */
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
     </style>
 </head>
+
 <body class="bg-gray-900 min-h-screen text-gray-100 antialiased">
 
     <div class="flex flex-col lg:flex-row">
-        
+
         <!-- Sidebar/Command Panel -->
-        <aside class="w-full lg:w-64 bg-gray-900 border-b lg:border-r border-red-600/50 p-6 shadow-xl flex flex-row lg:flex-col justify-between lg:justify-start overflow-x-auto lg:overflow-x-visible">
-            
+        <aside
+            class="w-full lg:w-64 bg-gray-900 border-b lg:border-r border-red-600/50 p-6 shadow-xl flex flex-row lg:flex-col justify-between lg:justify-start overflow-x-auto lg:overflow-x-visible">
+
             <h1 class="text-3xl font-extrabold text-red-500 tracking-widest uppercase mb-6 hidden lg:block">
                 <i data-lucide="wrench" class="inline-block mr-2 w-6 h-6"></i>
                 <span class="red-glow p-1">SYS/INTL</span>
             </h1>
 
             <div class="flex lg:flex-col space-x-4 lg:space-x-0 lg:space-y-4 text-sm font-medium">
-                <a href="#" class="flex items-center p-3 rounded-lg bg-red-700/80 text-white shadow-lg shadow-red-500/40 border border-red-500 transition hover:bg-red-800 flex-shrink-0">
+                <a href="#" data-view="dashboard"
+                    class="sidebar-link flex items-center p-3 rounded-lg transition hover:bg-gray-700/50 flex-shrink-0">
                     <i data-lucide="gauge" class="w-4 h-4 mr-3"></i>
                     DASHBOARD
                 </a>
-                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition border border-transparent hover:border-gray-600 flex-shrink-0">
-                    <i data-lucide="book-open-text" class="w-4 h-4 mr-3 text-gray-400"></i>
-                    JOURNAL (F01)
+                <a href="#" data-view="journal"
+                    class="sidebar-link flex items-center p-3 rounded-lg bg-red-700/80 text-white shadow-lg shadow-red-500/40 border border-red-500 transition hover:bg-red-800 flex-shrink-0">
+                    <i data-lucide="book-open-text" class="w-4 h-4 mr-3"></i>
+                    INSTALLATIONS
                 </a>
-                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition border border-transparent hover:border-gray-600 flex-shrink-0">
+                <a href="#" data-view="settings"
+                    class="sidebar-link flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition border border-transparent hover:border-gray-600 flex-shrink-0">
                     <i data-lucide="settings" class="w-4 h-4 mr-3 text-gray-400"></i>
                     SETTINGS (UAC)
                 </a>
                 <div class="flex-grow lg:flex-grow-0"></div>
-                <a href="#" class="flex items-center p-3 rounded-lg text-red-400 hover:text-red-300 transition lg:mt-12 flex-shrink-0">
+                <a href="#"
+                    class="flex items-center p-3 rounded-lg text-red-400 hover:text-red-300 transition lg:mt-12 flex-shrink-0">
                     <i data-lucide="log-out" class="w-4 h-4 mr-3"></i>
                     LOGOUT
                 </a>
             </div>
         </aside>
 
-        <!-- Main Dashboard Content -->
-        <main class="flex-1 p-4 sm:p-8 lg:p-10 grid-bg">
-            
-            <!-- Welcome Banner and Primary Action -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-4 border-b-2 border-red-600/50">
-                <h2 class="text-4xl font-light text-white uppercase tracking-wider">
-                    <span class="font-bold text-red-500">CONTROL</span> PANEL
-                </h2>
-                <button id="newEntryButton" class="mt-4 md:mt-0 px-6 py-3 text-lg font-bold text-white bg-green-600 rounded-md active-pulse border-2 border-green-400 transition hover:bg-green-700 hover:shadow-lg shadow-green-500/50 uppercase">
-                    <i data-lucide="plus" class="inline-block mr-2 w-5 h-5"></i>
-                    New Installation Entry
-                </button>
-            </div>
+        <!-- Main Content Area -->
+        <main id="main-content" class="flex-1 p-4 sm:p-8 lg:p-10 grid-bg">
 
-            <!-- SECTION 1: KEY METRICS GRID -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-                
-                <!-- Metric Card Template -->
-                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
-                    <div class="flex items-center justify-between">
-                        <p class="text-xs uppercase text-gray-400 tracking-widest">Total Installs (All-Time)</p>
-                        <i data-lucide="history" class="w-5 h-5 text-gray-500"></i>
-                    </div>
-                    <p class="text-5xl font-extrabold mt-1 text-white font-mono">1,492</p>
-                    <p class="text-sm mt-1 text-green-400">+1.2% vs Last Period</p>
-                </div>
+            <!-- VIEW: DASHBOARD -->
+            <div id="dashboard-view" class="view-content hidden space-y-8">
 
-                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
-                    <div class="flex items-center justify-between">
-                        <p class="text-xs uppercase text-gray-400 tracking-widest">Installs This Month</p>
-                        <i data-lucide="calendar" class="w-5 h-5 text-gray-500"></i>
-                    </div>
-                    <p class="text-5xl font-extrabold mt-1 text-red-500 font-mono">87</p>
-                    <p class="text-sm mt-1 text-red-400">Target: 100</p>
-                </div>
-
-                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
-                    <div class="flex items-center justify-between">
-                        <p class="text-xs uppercase text-gray-400 tracking-widest">Avg. Per Day (Active)</p>
-                        <i data-lucide="trending-up" class="w-5 h-5 text-gray-500"></i>
-                    </div>
-                    <p class="text-5xl font-extrabold mt-1 text-white font-mono">2.8</p>
-                    <p class="text-sm mt-1 text-yellow-400">Optimal Range</p>
-                </div>
-                
-                <div class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
-                    <div class="flex items-center justify-between">
-                        <p class="text-xs uppercase text-gray-400 tracking-widest">Active System Status</p>
-                        <i data-lucide="cpu" class="w-5 h-5 text-gray-500"></i>
-                    </div>
-                    <p class="text-5xl font-extrabold mt-1 text-green-400 font-mono">ONLINE</p>
-                    <p class="text-sm mt-1 text-gray-400">Uptime: 45 Days</p>
-                </div>
-            </div>
-
-            <!-- SECTION 2: DAILY PROGRESS AND CHART -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- Daily Progress/Target Tracking (Mechanical/Gauge Style) -->
-                <div class="lg:col-span-1 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
-                    <h3 class="text-xl font-bold mb-6 text-red-500 uppercase tracking-wide">
-                        <i data-lucide="bar-chart-3" class="inline-block mr-2 w-5 h-5"></i>
-                        DAILY TARGET MODULE
-                    </h3>
-                    
-                    <div class="flex justify-between items-center text-sm mb-2">
-                        <span class="text-gray-400">CURRENT:</span>
-                        <span class="text-white font-bold text-lg font-mono">3 / 5</span>
-                    </div>
-
-                    <!-- Mechanical Progress Bar (Simulated) -->
-                    <div class="w-full h-10 bg-gray-900 border-4 border-gray-700 p-1 mb-4 relative">
-                        <!-- Background texture -->
-                        <div class="absolute inset-0 bg-black/50"></div>
-                        <!-- Progress bar (Red heat indicator) -->
-                        <div class="h-full bg-red-600 transition-all duration-700" style="width: 60%; box-shadow: 0 0 5px rgba(239, 68, 68, 0.8);"></div>
-                        <!-- Target line indicator -->
-                        <div class="absolute h-full w-0.5 bg-green-400 left-[calc(100%*(5/5))] -ml-0.5"></div>
-                    </div>
-
-                    <div class="text-center space-y-2">
-                        <p class="text-4xl font-extrabold text-red-500 font-mono">60%</p>
-                        <p class="text-sm text-gray-400">Status: On Track (Target: 5)</p>
-                    </div>
-
-                    <button class="w-full mt-4 p-3 text-sm font-bold text-white bg-red-600 rounded-md active-pulse border-2 border-red-400 transition hover:bg-red-700 shadow-md shadow-red-500/50 uppercase">
-                        View Target Settings
+                <!-- Welcome Banner and Primary Action -->
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-4 border-b-2 border-red-600/50">
+                    <h2 class="text-4xl font-light text-white uppercase tracking-wider">
+                        <span class="font-bold text-red-500">CONTROL</span> PANEL
+                    </h2>
+                    <!-- Link to Journal Entry -->
+                    <button onclick="showFormModal('new')"
+                        class="mt-4 md:mt-0 px-6 py-3 text-lg font-bold text-white bg-green-600 rounded-md active-pulse border-2 border-green-400 transition hover:bg-green-700 hover:shadow-lg shadow-green-500/50 uppercase">
+                        <i data-lucide="plus" class="inline-block mr-2 w-5 h-5"></i>
+                        New Installation Entry
                     </button>
                 </div>
 
-                <!-- Daily Installation Chart Placeholder -->
-                <div class="lg:col-span-2 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
-                    <h3 class="text-xl font-bold mb-4 text-white uppercase tracking-wide">
-                        <i data-lucide="activity" class="inline-block mr-2 w-5 h-5 text-red-500"></i>
-                        WEEKLY PERFORMANCE CHART
-                    </h3>
-                    <div class="h-72 bg-gray-900 border-2 border-gray-700 p-4 flex items-center justify-center font-mono text-gray-500 text-lg">
-                        [DATA VISUALIZATION: LINE CHART PLACEHOLDER]
+                <!-- SECTION 1: KEY METRICS GRID -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Metric Card Template -->
+                    <div
+                        class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs uppercase text-gray-400 tracking-widest">Total Installs (All-Time)</p>
+                            <i data-lucide="history" class="w-5 h-5 text-gray-500"></i>
+                        </div>
+                        <p class="text-5xl font-extrabold mt-1 text-white font-mono">1,492</p>
+                        <p class="text-sm mt-1 text-green-400">+1.2% vs Last Period</p>
                     </div>
-                    <p class="text-xs text-gray-500 mt-2">Data refresh rate: 1 minute (Simulated)</p>
+
+                    <div
+                        class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs uppercase text-gray-400 tracking-widest">Installs This Month</p>
+                            <i data-lucide="calendar" class="w-5 h-5 text-gray-500"></i>
+                        </div>
+                        <p class="text-5xl font-extrabold mt-1 text-red-500 font-mono">87</p>
+                        <p class="text-sm mt-1 text-red-400">Target: 100</p>
+                    </div>
+
+                    <div
+                        class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs uppercase text-gray-400 tracking-widest">Avg. Per Day (Active)</p>
+                            <i data-lucide="trending-up" class="w-5 h-5 text-gray-500"></i>
+                        </div>
+                        <p class="text-5xl font-extrabold mt-1 text-white font-mono">2.8</p>
+                        <p class="text-sm mt-1 text-yellow-400">Optimal Range</p>
+                    </div>
+
+                    <div
+                        class="bg-gray-800 p-5 rounded-md border-l-4 border-red-600 shadow-lg transition hover:bg-gray-700/70">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs uppercase text-gray-400 tracking-widest">Active System Status</p>
+                            <i data-lucide="cpu" class="w-5 h-5 text-gray-500"></i>
+                        </div>
+                        <p class="text-5xl font-extrabold mt-1 text-green-400 font-mono">ONLINE</p>
+                        <p class="text-sm mt-1 text-gray-400">Uptime: 45 Days</p>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: DAILY PROGRESS AND CHART -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <!-- Daily Progress/Target Tracking (Mechanical/Gauge Style) -->
+                    <div class="lg:col-span-1 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
+                        <h3 class="text-xl font-bold mb-6 text-red-500 uppercase tracking-wide">
+                            <i data-lucide="bar-chart-3" class="inline-block mr-2 w-5 h-5"></i>
+                            DAILY TARGET MODULE
+                        </h3>
+
+                        <div class="flex justify-between items-center text-sm mb-2">
+                            <span class="text-gray-400">CURRENT:</span>
+                            <span class="text-white font-bold text-lg font-mono">3 / 5</span>
+                        </div>
+
+                        <!-- Mechanical Progress Bar (Simulated) -->
+                        <div class="w-full h-10 bg-gray-900 border-4 border-gray-700 p-1 mb-4 relative">
+                            <!-- Background texture -->
+                            <div class="absolute inset-0 bg-black/50"></div>
+                            <!-- Progress bar (Red heat indicator) -->
+                            <div class="h-full bg-red-600 transition-all duration-700"
+                                style="width: 60%; box-shadow: 0 0 5px rgba(239, 68, 68, 0.8);"></div>
+                            <!-- Target line indicator -->
+                            <div class="absolute h-full w-0.5 bg-green-400 left-[calc(100%*(5/5))] -ml-0.5"></div>
+                        </div>
+
+                        <div class="text-center space-y-2">
+                            <p class="text-4xl font-extrabold text-red-500 font-mono">60%</p>
+                            <p class="text-sm text-gray-400">Status: On Track (Target: 5)</p>
+                        </div>
+
+                        <button
+                            class="w-full mt-4 p-3 text-sm font-bold text-white bg-red-600 rounded-md active-pulse border-2 border-red-400 transition hover:bg-red-700 shadow-md shadow-red-500/50 uppercase">
+                            View Target Settings
+                        </button>
+                    </div>
+
+                    <!-- Daily Installation Chart Placeholder -->
+                    <div class="lg:col-span-2 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
+                        <h3 class="text-xl font-bold mb-4 text-white uppercase tracking-wide">
+                            <i data-lucide="activity" class="inline-block mr-2 w-5 h-5 text-red-500"></i>
+                            WEEKLY PERFORMANCE CHART
+                        </h3>
+                        <div
+                            class="h-72 bg-gray-900 border-2 border-gray-700 p-4 flex items-center justify-center font-mono text-gray-500 text-lg">
+                            [DATA VISUALIZATION: LINE CHART PLACEHOLDER]
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Data refresh rate: 1 minute (Simulated)</p>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: RECENT ACTIVITY / JOURNAL PREVIEW -->
+                <div class="mt-8 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
+                    <h3 class="text-xl font-bold mb-4 text-white uppercase tracking-wide">
+                        <i data-lucide="list-checks" class="inline-block mr-2 w-5 h-5 text-red-500"></i>
+                        RECENT INSTALLATION LOGS
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-700/50">
+                            <thead class="bg-gray-900">
+                                <tr>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Customer / Location
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Time Logged
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">
+                                        Duration
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700/50">
+                                <!-- Entry 1 (High contrast for active/recent) -->
+                                <tr onclick="showDetailsModal(mockInstallations[0])"
+                                    class="hover:bg-gray-700/50 transition bg-gray-900 border-l-4 border-red-500 cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-semibold text-white">Project: Citadel Tower B</div>
+                                        <div class="text-xs text-gray-400 font-mono">40.7128, -74.0060 (NYC)</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-400 font-mono">
+                                        15:30 - 17:15 (Today)
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white hidden sm:table-cell">
+                                        1h 45m
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button
+                                            onclick="event.stopPropagation(); showFormModal('edit', mockInstallations[0])"
+                                            class="text-red-500 hover:text-red-400 transition p-2"><i
+                                                data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                    </td>
+                                </tr>
+
+                                <!-- Entry 2 -->
+                                <tr onclick="showDetailsModal(mockInstallations[1])"
+                                    class="hover:bg-gray-700/50 transition cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-semibold text-white">Customer: A. Robertson</div>
+                                        <div class="text-xs text-gray-400 font-mono">250 Maple Dr, Suburbia</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 font-mono">
+                                        Yesterday, 10:00
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 hidden sm:table-cell">
+                                        2h 10m
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button
+                                            onclick="event.stopPropagation(); showFormModal('edit', mockInstallations[1])"
+                                            class="text-red-500 hover:text-red-400 transition p-2"><i
+                                                data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <!-- SECTION 3: RECENT ACTIVITY / JOURNAL PREVIEW -->
-            <div class="mt-8 bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
-                <h3 class="text-xl font-bold mb-4 text-white uppercase tracking-wide">
-                    <i data-lucide="list-checks" class="inline-block mr-2 w-5 h-5 text-red-500"></i>
-                    RECENT INSTALLATION LOGS
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-700/50">
-                        <thead class="bg-gray-900">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                    Customer / Location
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                    Time Logged
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden sm:table-cell">
-                                    Duration
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700/50">
-                            <!-- Entry 1 (High contrast for active/recent) -->
-                            <tr class="hover:bg-gray-700/50 transition bg-gray-900 border-l-4 border-red-500">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-white">Project: Citadel Tower B</div>
-                                    <div class="text-xs text-gray-400 font-mono">40.7128, -74.0060 (NYC)</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-400 font-mono">
-                                    15:30 - 17:15 (Today)
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white hidden sm:table-cell">
-                                    1h 45m
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-red-500 hover:text-red-400 transition p-2"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                                </td>
-                            </tr>
-                            
-                            <!-- Entry 2 -->
-                            <tr class="hover:bg-gray-700/50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-white">Customer: A. Robertson</div>
-                                    <div class="text-xs text-gray-400 font-mono">250 Maple Dr, Suburbia</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 font-mono">
-                                    Yesterday, 10:00
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 hidden sm:table-cell">
-                                    2h 10m
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-red-500 hover:text-red-400 transition p-2"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                                </td>
-                            </tr>
+            <!-- VIEW: JOURNAL (F01) -->
+            <div id="journal-view" class="view-content hidden space-y-8">
 
-                             <!-- Entry 3 -->
-                            <tr class="hover:bg-gray-700/50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-white">Alpha Warehouse System 3</div>
-                                    <div class="text-xs text-gray-400 font-mono">GPS Locked, Site B-7</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 font-mono">
-                                    3 days ago
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 hidden sm:table-cell">
-                                    0h 55m
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-red-500 hover:text-red-400 transition p-2"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <h2 class="text-4xl font-light text-white uppercase tracking-wider pb-4 border-b-2 border-red-600/50">
+                    <span class="font-bold text-red-500">JOURNAL</span> LOG (F01)
+                </h2>
+
+                <!-- Control Bar: Search, Filter, New Entry -->
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
+
+                    <!-- Search Bar -->
+                    <div class="flex-1 relative w-full md:w-auto">
+                        <i data-lucide="search"
+                            class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                        <input type="text" placeholder="Search customer, location, or date..."
+                            class="w-full mech-input rounded-md pl-10 font-mono text-sm uppercase" />
+                    </div>
+
+                    <!-- Filter Button -->
+                    <button
+                        class="px-5 py-3 text-sm font-bold text-gray-200 bg-gray-700 rounded-md border-2 border-gray-600 transition hover:bg-gray-600 shadow-lg shadow-black/50 uppercase flex items-center flex-shrink-0">
+                        <i data-lucide="filter" class="inline-block mr-2 w-4 h-4 text-red-400"></i>
+                        Filter: Status/Date
+                    </button>
+
+                    <!-- New Installation Button - Triggers Modal -->
+                    <button onclick="showFormModal('new')"
+                        class="px-6 py-3 text-lg font-bold text-white bg-green-600 rounded-md active-pulse border-2 border-green-400 transition hover:bg-green-700 shadow-md shadow-red-500/50 uppercase flex items-center flex-shrink-0">
+                        <i data-lucide="circuit-board" class="inline-block mr-2 w-5 h-5"></i>
+                        NEW INSTALLATION
+                    </button>
                 </div>
+
+                <!-- Installation History Table -->
+                <div class="bg-gray-800 p-6 rounded-md shadow-2xl border border-red-600/40">
+                    <h3 class="text-xl font-bold mb-4 text-white uppercase tracking-wide">
+                        <i data-lucide="layers-3" class="inline-block mr-2 w-5 h-5 text-red-500"></i>
+                        INSTALLATION LOG DATABASE
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-red-700/50">
+                            <thead class="bg-gray-900 border-b-2 border-red-600">
+                                <tr>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-left text-xs font-bold text-red-500 uppercase tracking-widest">
+                                        DATE</th>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-left text-xs font-bold text-red-500 uppercase tracking-widest">
+                                        CUSTOMER</th>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-left text-xs font-bold text-red-500 uppercase tracking-widest">
+                                        LOCATION (GPS)</th>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-center text-xs font-bold text-red-500 uppercase tracking-widest">
+                                        SPEED (MBPS)</th>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-center text-xs font-bold text-red-500 uppercase tracking-widest">
+                                        RSRP (-DBM)</th>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-right text-xs font-bold text-red-500 uppercase tracking-widest">
+                                        ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="installation-table-body" class="divide-y divide-gray-700/50 text-sm font-mono">
+                                <!-- Table rows will be generated by JS to handle clicks -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
         </main>
     </div>
 
-    <!-- Script to initialize Lucide icons -->
+    <!-- MODAL 1: INSTALLATION ENTRY FORM (Create/Edit) -->
+    <div id="installationFormModal" class="fixed inset-0 z-50 hidden modal-backdrop items-center justify-center p-4">
+        <div
+            class="w-full max-w-2xl bg-gray-800 border-2 border-red-600/50 shadow-2xl shadow-black/50 p-8 rounded-lg relative overflow-y-auto max-h-full">
+
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6 pb-3 border-b border-red-600/30">
+                <h3 id="formTitle" class="text-2xl font-extrabold text-white uppercase tracking-wider">NEW INSTALLATION
+                    DATA ENTRY</h3>
+                <button onclick="hideFormModal()" class="text-gray-400 hover:text-red-500 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <form id="installationEntryForm" class="space-y-4">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Customer Name -->
+                    <div>
+                        <label for="customer" class="block text-sm font-medium text-gray-300 mb-2 uppercase">Customer
+                            Name</label>
+                        <input type="text" id="customer" name="customer" class="w-full mech-input rounded-md"
+                            placeholder="J. Smith / Project Chimera" required>
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-300 mb-2 uppercase">Customer
+                            Phone</label>
+                        <input type="tel" id="phone" name="phone" class="w-full mech-input rounded-md"
+                            placeholder="+1-555-1234" required>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div>
+                    <label for="location" class="block text-sm font-medium text-gray-300 mb-2 uppercase">Location
+                        (Physical / GPS)</label>
+                    <input type="text" id="location" name="location" class="w-full mech-input rounded-md"
+                        placeholder="123 Industrial Park, Lat: 40.7128, Lon: -74.0060" required>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- Installed At (Date) -->
+                    <div>
+                        <label for="installedAt"
+                            class="block text-sm font-medium text-gray-300 mb-2 uppercase">Installation Date</label>
+                        <input type="date" id="installedAt" name="installedAt" class="w-full mech-input rounded-md"
+                            required>
+                    </div>
+
+                    <!-- Start Time -->
+                    <div>
+                        <label for="startTime" class="block text-sm font-medium text-gray-300 mb-2 uppercase">Start
+                            Time</label>
+                        <input type="time" id="startTime" name="startTime" class="w-full mech-input rounded-md"
+                            required>
+                    </div>
+
+                    <!-- End Time -->
+                    <div>
+                        <label for="endTime" class="block text-sm font-medium text-gray-300 mb-2 uppercase">End
+                            Time</label>
+                        <input type="time" id="endTime" name="endTime" class="w-full mech-input rounded-md" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Speed (Mbps) -->
+                    <div>
+                        <label for="speed" class="block text-sm font-medium text-gray-300 mb-2 uppercase">Speed
+                            (Mbps)</label>
+                        <input type="number" id="speed" name="speed" class="w-full mech-input rounded-md"
+                            placeholder="50.0" step="0.1" required>
+                    </div>
+
+                    <!-- RSRP (-dBm) -->
+                    <div>
+                        <label for="rsrp" class="block text-sm font-medium text-gray-300 mb-2 uppercase">RSRP Signal
+                            (-dBm)</label>
+                        <input type="number" id="rsrp" name="rsrp" class="w-full mech-input rounded-md"
+                            placeholder="-85" required>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div>
+                    <label for="notes" class="block text-sm font-medium text-gray-300 mb-2 uppercase">Notes /
+                        Diagnostics</label>
+                    <textarea id="notes" name="notes" rows="4" class="w-full mech-input rounded-md"
+                        placeholder="Cable run length, signal interference observations, specific hardware used..."></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" id="formSubmitButton"
+                        class="w-full py-3 text-lg font-bold text-white bg-red-600 rounded-md active-pulse border-2 border-red-400 transition hover:bg-red-700 shadow-md shadow-red-500/50 uppercase tracking-widest">
+                        <i data-lucide="upload-cloud" class="inline-block mr-2 w-5 h-5"></i>
+                        SUBMIT LOG ENTRY
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- MODAL 2: INSTALLATION DISPLAY MODAL (Details) -->
+    <div id="installationDetailsModal" class="fixed inset-0 z-50 hidden modal-backdrop items-center justify-center p-4">
+        <div
+            class="w-full max-w-lg bg-gray-800 border-2 border-green-600/50 shadow-2xl shadow-black/50 p-8 rounded-lg relative">
+
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6 pb-3 border-b border-green-600/30">
+                <h3 class="text-2xl font-extrabold text-white uppercase tracking-wider">LOG ENTRY DETAILS</h3>
+                <button onclick="hideDetailsModal()" class="text-gray-400 hover:text-green-500 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Detail Display -->
+            <div class="space-y-4 text-sm">
+
+                <div class="grid grid-cols-2 gap-4 p-3 bg-gray-900 border border-gray-700 rounded-md">
+                    <div>
+                        <p class="text-xs uppercase text-gray-400">Customer Name</p>
+                        <p id="detail-customer" class="text-lg font-semibold text-white font-mono"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase text-gray-400">Customer Phone</p>
+                        <p id="detail-phone" class="text-lg font-semibold text-white font-mono"></p>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-gray-900 border border-gray-700 rounded-md">
+                    <p class="text-xs uppercase text-gray-400">Location / GPS Coords</p>
+                    <p id="detail-location" class="text-lg font-semibold text-white font-mono"></p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-md">
+                        <p class="text-xs uppercase text-gray-400">Date</p>
+                        <p id="detail-date" class="text-lg font-semibold text-red-400 font-mono"></p>
+                    </div>
+                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-md">
+                        <p class="text-xs uppercase text-gray-400">Start Time</p>
+                        <p id="detail-start-time" class="text-lg font-semibold text-white font-mono"></p>
+                    </div>
+                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-md">
+                        <p class="text-xs uppercase text-gray-400">End Time</p>
+                        <p id="detail-end-time" class="text-lg font-semibold text-white font-mono"></p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-md">
+                        <p class="text-xs uppercase text-gray-400">Speed (Mbps)</p>
+                        <p id="detail-speed" class="text-3xl font-extrabold text-green-400 font-mono"></p>
+                    </div>
+                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-md">
+                        <p class="text-xs uppercase text-gray-400">RSRP (-dBm)</p>
+                        <p id="detail-rsrp" class="text-3xl font-extrabold text-green-400 font-mono"></p>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-gray-900 border border-gray-700 rounded-md">
+                    <p class="text-xs uppercase text-gray-400">Notes / Diagnostics</p>
+                    <p id="detail-notes" class="text-base text-gray-300 font-sans mt-1"></p>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-gray-700 mt-6">
+                <button onclick="hideDetailsModal()"
+                    class="w-full py-3 text-sm font-bold text-gray-200 bg-gray-700 rounded-md border-2 border-gray-600 transition hover:bg-gray-600 shadow-lg shadow-black/50 uppercase">
+                    CLOSE WINDOW
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script to handle all logic -->
     <script>
+        // Mock data to simulate fetching from the server (used for table and detail modal)
+        const mockInstallations = [
+            {
+                id: '1', customer: 'CITADEL TOWER (B)', phone: '+1-212-987-6543',
+                location: '40.7128, -74.0060 (NYC)', installedAt: '2025-12-02',
+                startTime: '15:30', endTime: '17:15', speed: 98.4, rsrp: -78,
+                notes: 'Successful high-speed deployment. Used directional antenna on 35th floor. No line-of-sight issues.',
+                createdBy: 'user_1'
+            },
+            {
+                id: '2', customer: 'A. ROBERTSON RES.', phone: '+1-555-123-4567',
+                location: '250 Maple Dr, Suburbia', installedAt: '2025-11-29',
+                startTime: '10:00', endTime: '12:10', speed: 55.1, rsrp: -92,
+                notes: 'Standard residential install. Signal slightly weaker due to surrounding foliage. Customer satisfied with speed.',
+                createdBy: 'user_1'
+            },
+            {
+                id: '3', customer: 'ALPHA WAREHOUSE 3', phone: '+1-301-444-9999',
+                location: '38.9072, -77.0369', installedAt: '2025-11-28',
+                startTime: '08:30', endTime: '09:45', speed: 12.9, rsrp: -105,
+                notes: 'Sub-optimal performance. Interference from heavy machinery. Recommend site survey for alternate antenna placement.',
+                createdBy: 'user_2'
+            }
+        ];
+
+        let currentView = 'dashboard';
+        let currentEditingInstallation = null; // Stores data for editing
+
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+
+            // Set up sidebar link listeners
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewName = link.getAttribute('data-view');
+                    if (viewName) {
+                        changeView(viewName);
+                    }
+                });
+            });
+
+            // Handle form submission (Mock save)
+            document.getElementById('installationEntryForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+
+                // Convert numbers
+                data.speed = parseFloat(data.speed);
+                data.rsrp = parseInt(data.rsrp, 10);
+
+                if (currentEditingInstallation) {
+                    console.log('--- Editing Installation ---', data);
+                    // In a real app, send PUT/PATCH request here
+                } else {
+                    console.log('--- New Installation Created ---', data);
+                    // In a real app, send POST request here
+                }
+
+                // Mock update UI (if successful)
+                hideFormModal();
+                alertMessage('Log entry submitted successfully.', 'green');
+                // You would typically refetch data here: renderInstallationTable();
+            });
+
+
+            // Initial view load
+            changeView('dashboard');
         });
+
+        // Simple alert function (instead of window.alert)
+        function alertMessage(message, color) {
+            console.log(`[ALERT - ${color.toUpperCase()}]: ${message}`);
+            // You would use a dedicated UI element here (e.g., a toast notification)
+        }
+
+        function changeView(viewName) {
+            // 1. Hide all views
+            document.querySelectorAll('.view-content').forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            // 2. Show the selected view
+            const selectedView = document.getElementById(viewName + '-view');
+            if (selectedView) {
+                selectedView.classList.remove('hidden');
+                currentView = viewName;
+            }
+
+            // If switching to Journal, re-render the table
+            if (viewName === 'journal') {
+                renderInstallationTable(mockInstallations);
+            }
+
+            // 3. Update active sidebar link styling
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('bg-red-700/80', 'text-white', 'shadow-lg', 'shadow-red-500/40', 'border', 'border-red-500');
+                link.classList.add('text-gray-400', 'border', 'border-transparent');
+
+                if (link.getAttribute('data-view') === viewName) {
+                    link.classList.add('bg-red-700/80', 'text-white', 'shadow-lg', 'shadow-red-500/40', 'border', 'border-red-500');
+                    link.classList.remove('text-gray-400');
+                }
+            });
+
+            lucide.createIcons(); // Re-render icons after DOM updates
+        }
+
+        // --- MODAL 1: FORM LOGIC (CREATE/EDIT) ---
+
+        function showFormModal(mode, installation = null) {
+            const modal = document.getElementById('installationFormModal');
+            const form = document.getElementById('installationEntryForm');
+            const title = document.getElementById('formTitle');
+            const button = document.getElementById('formSubmitButton');
+
+            currentEditingInstallation = installation;
+
+            form.reset(); // Clear previous data
+
+            if (mode === 'edit' && installation) {
+                title.textContent = 'EDIT LOG ENTRY: ' + installation.customer;
+                button.innerHTML = '<i data-lucide="save" class="inline-block mr-2 w-5 h-5"></i> UPDATE LOG ENTRY';
+                button.classList.replace('bg-red-600', 'bg-yellow-600');
+                button.classList.replace('border-red-400', 'border-yellow-400');
+                button.classList.remove('active-pulse');
+
+                // Populate form fields
+                document.getElementById('customer').value = installation.customer;
+                document.getElementById('phone').value = installation.phone;
+                document.getElementById('location').value = installation.location;
+                document.getElementById('installedAt').value = installation.installedAt;
+                document.getElementById('startTime').value = installation.startTime;
+                document.getElementById('endTime').value = installation.endTime;
+                document.getElementById('speed').value = installation.speed;
+                document.getElementById('rsrp').value = installation.rsrp;
+                document.getElementById('notes').value = installation.notes || '';
+
+            } else {
+                title.textContent = 'NEW INSTALLATION DATA ENTRY';
+                button.innerHTML = '<i data-lucide="upload-cloud" class="inline-block mr-2 w-5 h-5"></i> SUBMIT LOG ENTRY';
+                button.classList.replace('bg-yellow-600', 'bg-red-600');
+                button.classList.replace('border-yellow-400', 'border-red-400');
+                button.classList.add('active-pulse');
+            }
+
+            modal.classList.add('flex');
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function hideFormModal() {
+            const modal = document.getElementById('installationFormModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            currentEditingInstallation = null;
+        }
+
+        // --- MODAL 2: DETAILS LOGIC (DISPLAY) ---
+
+        function showDetailsModal(installation) {
+            const modal = document.getElementById('installationDetailsModal');
+
+            document.getElementById('detail-customer').textContent = installation.customer;
+            document.getElementById('detail-phone').textContent = installation.phone;
+            document.getElementById('detail-location').textContent = installation.location;
+            document.getElementById('detail-date').textContent = installation.installedAt;
+            document.getElementById('detail-start-time').textContent = installation.startTime;
+            document.getElementById('detail-end-time').textContent = installation.endTime;
+            document.getElementById('detail-speed').textContent = installation.speed.toFixed(1) + ' Mbps';
+            document.getElementById('detail-rsrp').textContent = installation.rsrp + ' dBm';
+            document.getElementById('detail-notes').textContent = installation.notes || 'N/A';
+
+            // Optional: Color code the RSRP/Speed based on performance
+            const speedElement = document.getElementById('detail-speed');
+            const rsrpElement = document.getElementById('detail-rsrp');
+
+            [speedElement, rsrpElement].forEach(el => el.classList.remove('text-green-400', 'text-yellow-400', 'text-red-500'));
+
+            if (installation.rsrp > -90 && installation.speed > 50) {
+                [speedElement, rsrpElement].forEach(el => el.classList.add('text-green-400'));
+            } else if (installation.rsrp > -100 && installation.speed > 20) {
+                [speedElement, rsrpElement].forEach(el => el.classList.add('text-yellow-400'));
+            } else {
+                [speedElement, rsrpElement].forEach(el => el.classList.add('text-red-500'));
+            }
+
+            modal.classList.add('flex');
+            modal.classList.remove('hidden');
+        }
+
+        function hideDetailsModal() {
+            const modal = document.getElementById('installationDetailsModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // --- TABLE RENDERING LOGIC ---
+
+        function renderInstallationTable(data) {
+            const tbody = document.getElementById('installation-table-body');
+            tbody.innerHTML = ''; // Clear existing rows
+
+            data.forEach((installation, index) => {
+                // Determine styling based on signal quality (RSRP)
+                let statusColor = 'border-l-4 border-green-500'; // Good
+                let speedColor = 'text-green-400';
+                let rsrpColor = 'text-green-400';
+
+                if (installation.rsrp <= -90 && installation.rsrp > -100) {
+                    statusColor = 'border-l-4 border-yellow-500'; // Moderate
+                    speedColor = 'text-yellow-400';
+                    rsrpColor = 'text-yellow-400';
+                } else if (installation.rsrp <= -100) {
+                    statusColor = 'border-l-4 border-red-500'; // Poor
+                    speedColor = 'text-red-500';
+                    rsrpColor = 'text-red-500';
+                }
+
+                // Check for warning status on last entry
+                const isLastEntryPoor = (index === data.length - 1 && installation.rsrp <= -100);
+                const pulseClass = isLastEntryPoor ? 'active-pulse' : '';
+
+                const row = `
+                    <tr onclick="showDetailsModal(mockInstallations[${index}])" class="hover:bg-gray-700/50 transition cursor-pointer ${statusColor} ${index % 2 === 1 ? 'bg-gray-900/50' : ''}">
+                        <td class="px-4 py-3 whitespace-nowrap text-gray-300">${installation.installedAt}</td>
+                        <td class="px-4 py-3 whitespace-nowrap font-semibold text-white">${installation.customer}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-gray-400">${installation.location.split(',')[0]}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-center font-extrabold ${speedColor}">${installation.speed.toFixed(1)}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-center font-extrabold ${rsrpColor} ${pulseClass}">${installation.rsrp}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-right space-x-2">
+                            <button onclick="event.stopPropagation(); showFormModal('edit', mockInstallations[${index}])" 
+                                    class="text-red-500 hover:text-red-400 transition p-1" title="Edit Entry">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); alertMessage('Delete functionality not yet implemented.', 'yellow')" 
+                                    class="text-gray-500 hover:text-red-600 transition p-1" title="Delete Entry">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+            lucide.createIcons(); // Re-render icons after adding table content
+        }
     </script>
 </body>
+
 </html>

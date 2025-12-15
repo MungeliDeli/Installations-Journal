@@ -12,7 +12,9 @@ function App() {
     <Routes>
       <Route
         path="/"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <AuthPage />}
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <AuthPage />
+        }
       />
       <Route
         path="/dashboard"
@@ -23,7 +25,7 @@ function App() {
         }
       />
       <Route
-        path="/journal"
+        path="/installations"
         element={
           <ProtectedRoute>
             <Dashboard />
@@ -31,7 +33,7 @@ function App() {
         }
       />
       <Route
-        path="/settings"
+        path="/profile"
         element={
           <ProtectedRoute>
             <Dashboard />

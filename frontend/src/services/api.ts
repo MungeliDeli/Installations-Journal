@@ -1,7 +1,7 @@
 import axios from "axios";
 import { tokenService } from "../utils/token";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
   headers: {
     "Content-Type": "application/json",
@@ -19,7 +19,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isLoginRequest = error.config?.url?.includes("/auth/login");
+
+    if (
+      error.response?.status === 401 &&
+      !isLoginRequest &&
+      tokenService.getToken()
+    ) {
       tokenService.removeToken();
       window.location.href = "/";
     }
@@ -56,7 +62,9 @@ export const authApi = {
   },
 
   signup: async (data: SignUpData): Promise<AuthResponse> => {
+    console.log("response");
     const response = await api.post<AuthResponse>("/auth/register", data);
+
     return response.data;
   },
 };

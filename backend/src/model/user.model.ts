@@ -4,6 +4,11 @@ export interface IUser extends Document {
   email: string;
   password: string;
   phone: string;
+  profileImage?: string;
+  supervisor?: string;
+  cluster?: string;
+  targetInstallations?: number;
+  startDate?: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -23,6 +28,26 @@ const userSchema = new Schema<IUser>(
     phone: {
       type: String,
       required: true,
+    },
+    profileImage: {
+      type: String,
+      default: null,
+    },
+    supervisor: {
+      type: String,
+      default: null,
+    },
+    cluster: {
+      type: String,
+      default: null,
+    },
+    targetInstallations: {
+      type: Number,
+      default: 0,
+    },
+    startDate: {
+      type: Date,
+      default: Date.now,
     },
   },
   { timestamps: true }

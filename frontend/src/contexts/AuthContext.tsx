@@ -5,6 +5,12 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone: string;
+  profileImage?: string;
+  supervisor?: string;
+  cluster?: string;
+  targetInstallations?: number;
+  startDate?: string | Date;
 }
 
 interface AuthContextType {
@@ -12,6 +18,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (user: User, token: string) => void;
   logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,6 +44,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const updateUser = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      tokenService.setUser(updatedUser);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -44,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user && !!tokenService.getToken(),
         login,
         logout,
+        updateUser,
       }}
     >
       {children}

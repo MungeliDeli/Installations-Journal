@@ -1,7 +1,11 @@
 import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
+import installationsRoutes from "./routes/installation.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import { erroHandler, notFoundHandler } from "./middleware/errorHandler.js";
+import multer from "multer";
+import { multerErrorHandler } from "./middleware/mulrerErrorHandler.js";
 
 const app = express();
 
@@ -18,8 +22,14 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/auth", authRoutes);
+// Serve static files for uploads
+app.use('/uploads', express.static('uploads'));
 
+app.use("/api/installations", installationsRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+
+app.use(multerErrorHandler);
 app.use(notFoundHandler);
 app.use(erroHandler);
 

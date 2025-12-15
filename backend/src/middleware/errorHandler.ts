@@ -20,7 +20,23 @@ export const erroHandler = (
     errors = err.errors;
   }
 
-  if (err.name === "ValidationError") {
+  // Handle Multer errors
+  if (err.name === "MulterError") {
+    statusCode = 400;
+    const multerErr = err as any;
+    if (multerErr.code === "LIMIT_FILE_SIZE") {
+      message = "File too large. Maximum size is 10MB per file.";
+    } else if (multerErr.code === "LIMIT_FILE_COUNT") {
+      message = "Too many files. Maximum 10 files allowed.";
+    } else if (multerErr.code === "LIMIT_UNEXPECTED_FILE") {
+      message = "Unexpected file field.";
+    } else {
+      message = "File upload error: " + multerErr.message;
+    }
+  } else if (err.message && err.message.includes("Invalid file type")) {
+    statusCode = 400;
+    message = err.message;
+  } else if (err.name === "ValidationError") {
     statusCode = 400;
     message = "Validation Error";
     errors = Object.values((err as any).errors).map((e: any) => ({
@@ -45,12 +61,17 @@ export const erroHandler = (
     message = "Token expired";
   }
 
-  console.error("Error: ", {
-    message: err.message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+  console.error("=== ERROR HANDLER ===");
+  console.error("Error type:", err?.constructor?.name);
+  console.error("Error message:", err.message);
+  console.error("Error stack:", err.stack);
+  console.error("Request details:", {
     url: req.originalUrl,
     method: req.method,
+    body: req.body,
+    files: req.files,
   });
+  console.error("Processed errors:", errors);
 
   res.status(statusCode).json({
     success: false,

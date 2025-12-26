@@ -113,7 +113,7 @@ export default function NotificationModal({
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes shrink {
           from {
             width: 100%;

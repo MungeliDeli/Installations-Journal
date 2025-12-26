@@ -6,17 +6,17 @@ import FilterModal from "../components/installations/FilterModal";
 import NewInstallationModal from "../components/installations/NewInstallationModal";
 import InstallationDetailsModal from "../components/installations/InstallationDetailsModal";
 import DeleteConfirmationModal from "../components/installations/DeleteConfirmationModal";
-import Button from "../components/ui/Button";
+
 import ResponsiveButton from "../components/ui/ResponsiveButton";
 import NotificationModal from "../components/ui/NotificationModal";
 import { useInstallations } from "../hooks/useInstallations";
 import type { Installation } from "../types/installation";
 
 interface InstallationsPageProps {
-  onMenuToggle: () => void;
+  onMenuToggle?: () => void;
 }
 
-export default function InstallationsPage({ onMenuToggle }: InstallationsPageProps) {
+export default function InstallationsPage({ onMenuToggle = () => {} }: InstallationsPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNewInstallationModalOpen, setIsNewInstallationModalOpen] = useState(false);
@@ -181,7 +181,7 @@ export default function InstallationsPage({ onMenuToggle }: InstallationsPagePro
           installations={installations}
           searchQuery={searchQuery}
           onInstallationClick={handleInstallationClick}
-          onDeleteClick={handleDeleteClick}
+
         />
       )}
 

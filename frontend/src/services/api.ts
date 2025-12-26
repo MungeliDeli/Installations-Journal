@@ -51,6 +51,14 @@ export interface AuthResponse {
     id: string;
     name: string;
     email: string;
+    phone: string;
+    profileImage?: string;
+    supervisor?: string;
+    cluster?: string;
+    startDate?: string | Date;
+    dailyTarget?: number;
+    weeklyTarget?: number;
+    monthlyTarget?: number;
   };
   error?: string;
 }

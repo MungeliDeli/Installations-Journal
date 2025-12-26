@@ -1,5 +1,4 @@
 import Toast from "./Toast";
-import { useToast } from "../../hooks/useToast";
 
 interface ToastContainerProps {
   toasts: Array<{

@@ -1,15 +1,15 @@
 import PageHeader from "../components/layout/PageHeader";
 import StatsCards from "../components/dashboard/StatsCards";
-import DailyTargetModule from "../components/dashboard/DailyTargetModule";
-import WeeklyPerformanceChart from "../components/dashboard/WeeklyPerformanceChart";
-import Button from "../components/ui/Button";
+import InteractiveChart from "../components/dashboard/InteractiveChart";
+import PerformanceMetrics from "../components/dashboard/PerformanceMetrics";
+import QuickStats from "../components/dashboard/QuickStats";
 import ResponsiveButton from "../components/ui/ResponsiveButton";
 
 interface DashboardPageProps {
-  onMenuToggle: () => void;
+  onMenuToggle?: () => void;
 }
 
-export default function DashboardPage({ onMenuToggle }: DashboardPageProps) {
+export default function DashboardPage({ onMenuToggle = () => {} }: DashboardPageProps) {
   const headerActions = (
     <ResponsiveButton
       variant="filled"
@@ -35,7 +35,7 @@ export default function DashboardPage({ onMenuToggle }: DashboardPageProps) {
   );
 
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader
         title={
           <>
@@ -43,17 +43,26 @@ export default function DashboardPage({ onMenuToggle }: DashboardPageProps) {
             <span className="text-(--color-text-primary)">PANEL</span>
           </>
         }
-        subtitle="SYSTEM OVERVIEW"
+        subtitle="REAL-TIME SYSTEM OVERVIEW"
         onMenuToggle={onMenuToggle}
         actions={headerActions}
       />
       
+      {/* Main Stats Cards */}
       <StatsCards />
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <DailyTargetModule />
-        <WeeklyPerformanceChart />
+      {/* Interactive Chart */}
+      <InteractiveChart />
+      
+      {/* Performance Metrics and Quick Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <PerformanceMetrics />
+        </div>
+        <div>
+          <QuickStats />
+        </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -33,6 +33,14 @@ function App() {
         }
       />
       <Route
+        path="/tracking"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/profile"
         element={
           <ProtectedRoute>

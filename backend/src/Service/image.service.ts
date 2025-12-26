@@ -19,9 +19,11 @@ interface Uploadedimage {
 export class ImageService {
   /**
    * Processes and uploads an image to S3
-   * compress to under 500kb
-   * resize to max width or height of 1920px
-   * convert to jpeg for berter format
+   * - Auto-rotate based on EXIF orientation (fixes rotation issues)
+   * - Compress to under 500kb
+   * - Resize to max width or height of 1920px
+   * - Convert to JPEG format
+   * - Strip metadata for privacy and smaller file size
    */
   static async processImage(buffer: Buffer): Promise<ProcessedImage> {
     let quality = 85;
@@ -30,27 +32,35 @@ export class ImageService {
 
     const metadata = await sharp(buffer).metadata();
 
-    let sharpInstance = sharp(buffer);
+    let sharpInstance = sharp(buffer)
+      .rotate() // Auto-rotate based on EXIF orientation data - this fixes rotation issues
+      .withMetadata(false); // Strip EXIF and other metadata for privacy and smaller file size
 
-    if (metadata.width && metadata.height > 1920) {
+    // Resize if image is larger than 1920px on either dimension
+    if (metadata.width && metadata.width > 1920 || metadata.height && metadata.height > 1920) {
       sharpInstance = sharpInstance.resize(1920, 1920, {
         fit: "inside",
         withoutEnlargement: true,
       });
     }
 
+    // Compress until under 500kb or quality gets too low
     do {
-      processedBuffer = await sharpInstance.jpeg({ quality }).toBuffer();
+      processedBuffer = await sharpInstance.jpeg({ 
+        quality,
+        progressive: true, // Progressive JPEG for better loading experience
+        mozjpeg: true // Use mozjpeg encoder for better compression
+      }).toBuffer();
       imageSize = processedBuffer.length;
 
       if (imageSize > 500 * 1024) {
         quality -= 5;
       }
 
-      if (quality < 60) {
+      if (quality < 50) {
         break; // Prevent quality from going too low
       }
-    } while (imageSize > 500 * 1024 && quality >= 60);
+    } while (imageSize > 500 * 1024 && quality >= 50);
 
     return {
       buffer: processedBuffer,

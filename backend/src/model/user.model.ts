@@ -5,10 +5,13 @@ export interface IUser extends Document {
   password: string;
   phone: string;
   profileImage?: string;
+  profileImageKey?: string;
   supervisor?: string;
   cluster?: string;
-  targetInstallations?: number;
   startDate?: Date;
+  dailyTarget?: number;
+  weeklyTarget?: number;
+  monthlyTarget?: number;
 }
 
 const userSchema = new Schema<IUser>(
@@ -33,6 +36,10 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: null,
     },
+    profileImageKey: {
+      type: String,
+      default: null,
+    },
     supervisor: {
       type: String,
       default: null,
@@ -41,13 +48,21 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: null,
     },
-    targetInstallations: {
-      type: Number,
-      default: 0,
-    },
     startDate: {
       type: Date,
       default: Date.now,
+    },
+    dailyTarget: {
+      type: Number,
+      default: 4,
+    },
+    weeklyTarget: {
+      type: Number,
+      default: 20,
+    },
+    monthlyTarget: {
+      type: Number,
+      default: 80,
     },
   },
   { timestamps: true }

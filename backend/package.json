@@ -27,7 +27,8 @@
     "mongoose": "^9.0.0",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -36,13 +37,16 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.10.1",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "tsx": "^4.20.6"
   },
   "compilerOptions": {
     "typeRoots": [
       "./node_modules/@types",
       "./types"
     ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }

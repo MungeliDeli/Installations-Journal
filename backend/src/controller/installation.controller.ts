@@ -6,7 +6,7 @@ import {
 } from "../model/installation.model.js";
 import { type Request, type Response } from "express";
 import { NotFoundError, ConflictError } from "../utils/customErrors.js";
-import { ImageService } from "../service/image.service.js";
+import { ImageService } from "../Service/image.service.js";
 
 // Extended Request interface with user
 interface AuthRequest extends Request {

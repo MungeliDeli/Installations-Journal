@@ -1,17 +1,17 @@
 import { type Request, type Response } from "express";
-import { User } from "../model/user.model.js";
+import { User } from "../model/user.model.ts";
 import {
   hashpassword,
   comparePassword,
   generatToken,
-} from "../service/auth.service.js";
+} from "../service/auth.service.ts";
 import {
   ConflictError,
   UnauthorizedError,
   NotFoundError,
   BadRequestError,
-} from "../utils/customErrors.js";
-import { ProfileImageService } from "../service/profileImage.service.js";
+} from "../utils/customErrors.ts";
+import { ProfileImageService } from "../service/profileImage.service.ts";
 import multer from "multer";
 
 // Configure multer for profile image uploads (memory storage for S3)

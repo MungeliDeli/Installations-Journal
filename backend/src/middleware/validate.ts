@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from "express";
 import { type Schema } from "joi";
-import { ValidationError } from "../utils/customErrors.js";
+import { ValidationError } from "../utils/customErrors.ts";
 
 export const validate = (schema: Schema) => {
   return (req: Request, res: Response, next: NextFunction) => {

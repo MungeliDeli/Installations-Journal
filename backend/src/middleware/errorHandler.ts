@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { AppError } from "../utils/customErrors.js";
+import { AppError } from "../utils/customErrors.ts";
 import { url } from "inspector";
 
 // main error handler middleware  function

@@ -4,14 +4,14 @@ import {
   hashpassword,
   comparePassword,
   generatToken,
-} from "../Service/auth.service.js";
+} from "../service/auth.service.js";
 import {
   ConflictError,
   UnauthorizedError,
   NotFoundError,
   BadRequestError,
 } from "../utils/customErrors.js";
-import { ProfileImageService } from "../Service/profileImage.service.js";
+import { ProfileImageService } from "../service/profileImage.service.js";
 import multer from "multer";
 
 // Configure multer for profile image uploads (memory storage for S3)

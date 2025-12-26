@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { type IUser } from "../model/user.model.ts";
+import { type IUser } from "../model/user.model.js";
 
 export const hashpassword = async (password: string) => {
   return await bcrypt.hash(password, 10);

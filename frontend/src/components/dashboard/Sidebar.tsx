@@ -1,11 +1,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth, type User } from "../../contexts/AuthContext";
 import { getImageUrl } from "../../utils/config";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  user: { id: string; name: string; email: string } | null;
+  user: User | null;
 }
 
 export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
@@ -21,6 +21,7 @@ export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
   const menuItems = [
     { path: "/dashboard", label: "DASHBOARD", icon: "dashboard" },
     { path: "/installations", label: "INSTALLATIONS", icon: "installations" },
+    { path: "/tracking", label: "TRACKING", icon: "tracking" },
     { path: "/profile", label: "PROFILE", icon: "profile" },
   ];
 
@@ -119,6 +120,19 @@ export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
                     >
                       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                  )}
+                  {item.icon === "tracking" && (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M3 3v18h18" />
+                      <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
                     </svg>
                   )}
                   {item.icon === "profile" && (

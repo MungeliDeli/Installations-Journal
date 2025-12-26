@@ -22,9 +22,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files for uploads
-app.use('/uploads', express.static('uploads'));
-
 app.use("/api/installations", installationsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);

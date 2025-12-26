@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import PageHeader from "../components/layout/PageHeader";
 import ProfileOverview from "../components/profile/ProfileOverview";
@@ -7,7 +7,11 @@ import ToastContainer from "../components/ui/ToastContainer";
 import { useToast } from "../hooks/useToast";
 import { getImageUrl } from "../utils/config";
 
-export default function ProfilePage() {
+interface ProfilePageProps {
+  onMenuToggle?: () => void;
+}
+
+export default function ProfilePage({ onMenuToggle = () => {} }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "settings">("overview");
   const { user } = useAuth();
   const { toasts, removeToast, success, error } = useToast();
@@ -39,6 +43,7 @@ export default function ProfilePage() {
       <PageHeader
         title="PROFILE"
         subtitle="Manage your account and preferences"
+        onMenuToggle={onMenuToggle}
       />
       
       <div className="p-4 lg:p-6">

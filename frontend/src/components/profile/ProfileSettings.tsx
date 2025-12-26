@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { profileApi } from "../../services/profileApi";
 import { getImageUrl } from "../../utils/config";
+import { validateImageFile, validateProfileForm } from "../../utils/validation";
 
 interface ProfileSettingsProps {
   onProfileUpdate: () => void;
@@ -26,7 +27,9 @@ export default function ProfileSettings({
     phone: user?.phone || '',
     supervisor: user?.supervisor || '',
     cluster: user?.cluster || '',
-    targetInstallations: user?.targetInstallations || 0,
+    dailyTarget: user?.dailyTarget || 4,
+    weeklyTarget: user?.weeklyTarget || 20,
+    monthlyTarget: user?.monthlyTarget || 80,
   });
 
   // Password form state
@@ -42,6 +45,22 @@ export default function ProfileSettings({
     password: false,
   });
 
+  // Update form when user data changes
+  useEffect(() => {
+    if (user) {
+      setProfileForm({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        supervisor: user.supervisor || '',
+        cluster: user.cluster || '',
+        dailyTarget: user.dailyTarget || 4,
+        weeklyTarget: user.weeklyTarget || 20,
+        monthlyTarget: user.monthlyTarget || 80,
+      });
+    }
+  }, [user]);
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -50,6 +69,14 @@ export default function ProfileSettings({
     e.preventDefault();
     setLoading(prev => ({ ...prev, profile: true }));
     setErrors({});
+
+    // Validate form
+    const validation = validateProfileForm(profileForm);
+    if (!validation.isValid) {
+      setErrors(validation.errors);
+      setLoading(prev => ({ ...prev, profile: false }));
+      return;
+    }
 
     try {
       const data = await profileApi.updateProfile(profileForm);
@@ -68,15 +95,10 @@ export default function ProfileSettings({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      onError('Please select a valid image file');
-      return;
-    }
-
-    // Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      onError('Image size must be less than 5MB');
+    // Validate image file
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      onError(validationError);
       return;
     }
 
@@ -250,7 +272,7 @@ export default function ProfileSettings({
               </div>
 
               <p className="text-xs text-(--color-text-secondary)">
-                JPG, PNG or GIF. Max size 5MB.
+                JPG, PNG or GIF. Max size 10MB. Images will be automatically resized and compressed.
               </p>
               
               {selectedImage && (
@@ -349,18 +371,107 @@ export default function ProfileSettings({
                 className="w-full p-3 bg-(--color-bg) border border-(--color-border) rounded text-(--color-text-primary) focus:outline-none focus:border-(--color-accent-red)"
               />
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-(--color-text-secondary) uppercase tracking-wide mb-2">
-                Target Installations
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={profileForm.targetInstallations}
-                onChange={(e) => setProfileForm(prev => ({ ...prev, targetInstallations: parseInt(e.target.value) || 0 }))}
-                className="w-full p-3 bg-(--color-bg) border border-(--color-border) rounded text-(--color-text-primary) focus:outline-none focus:border-(--color-accent-red)"
-              />
+          {/* Tracking Targets Section */}
+          <div className="mt-6 pt-6 border-t border-(--color-border)">
+            <h4 className="text-md font-semibold text-(--color-text-primary) mb-4 flex items-center gap-2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-(--color-accent-red)"
+              >
+                <path d="M3 3v18h18" />
+                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+              </svg>
+              TRACKING TARGETS
+            </h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-(--color-text-secondary) uppercase tracking-wide mb-2">
+                  Daily Target
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={profileForm.dailyTarget || ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setProfileForm(prev => ({ 
+                      ...prev, 
+                      dailyTarget: value === '' ? 1 : Math.max(1, parseInt(value) || 1)
+                    }));
+                  }}
+                  className={`w-full p-3 bg-(--color-bg) border rounded text-(--color-text-primary) focus:outline-none ${
+                    errors.dailyTarget 
+                      ? 'border-red-500 focus:border-red-500' 
+                      : 'border-(--color-border) focus:border-(--color-accent-red)'
+                  }`}
+                />
+                {errors.dailyTarget && (
+                  <p className="text-red-500 text-xs mt-1">{errors.dailyTarget}</p>
+                )}
+                <p className="text-xs text-(--color-text-muted) mt-1">Installations per day</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-(--color-text-secondary) uppercase tracking-wide mb-2">
+                  Weekly Target
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={profileForm.weeklyTarget || ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setProfileForm(prev => ({ 
+                      ...prev, 
+                      weeklyTarget: value === '' ? 1 : Math.max(1, parseInt(value) || 1)
+                    }));
+                  }}
+                  className={`w-full p-3 bg-(--color-bg) border rounded text-(--color-text-primary) focus:outline-none ${
+                    errors.weeklyTarget 
+                      ? 'border-red-500 focus:border-red-500' 
+                      : 'border-(--color-border) focus:border-(--color-accent-red)'
+                  }`}
+                />
+                {errors.weeklyTarget && (
+                  <p className="text-red-500 text-xs mt-1">{errors.weeklyTarget}</p>
+                )}
+                <p className="text-xs text-(--color-text-muted) mt-1">Monday to Saturday</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-(--color-text-secondary) uppercase tracking-wide mb-2">
+                  Monthly Target
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={profileForm.monthlyTarget || ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setProfileForm(prev => ({ 
+                      ...prev, 
+                      monthlyTarget: value === '' ? 1 : Math.max(1, parseInt(value) || 1)
+                    }));
+                  }}
+                  className={`w-full p-3 bg-(--color-bg) border rounded text-(--color-text-primary) focus:outline-none ${
+                    errors.monthlyTarget 
+                      ? 'border-red-500 focus:border-red-500' 
+                      : 'border-(--color-border) focus:border-(--color-accent-red)'
+                  }`}
+                />
+                {errors.monthlyTarget && (
+                  <p className="text-red-500 text-xs mt-1">{errors.monthlyTarget}</p>
+                )}
+                <p className="text-xs text-(--color-text-muted) mt-1">Installations per month</p>
+              </div>
             </div>
           </div>
 

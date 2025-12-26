@@ -6,27 +6,13 @@ import {
   generatToken,
 } from "../service/auth.service.js";
 import { ConflictError, UnauthorizedError, NotFoundError, BadRequestError } from "../utils/customErrors.js";
+import { ProfileImageService } from "../service/profileImage.service.js";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
 
-// Configure multer for profile image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const userId = req.user?.id;
-    const uploadPath = path.join(process.cwd(), 'uploads', 'profile-images', userId);
+// Configure multer for profile image uploads (memory storage for S3)
+const storage = multer.memoryStorage();
 
-    // Create directory if it doesn't exist
-    fs.mkdirSync(uploadPath, { recursive: true });
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `profile${ext}`);
-  }
-});
-
-const fileFilter = (req: any, file: any, cb: any) => {
+const fileFilter = (_req: any, file: any, cb: any) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -38,7 +24,7 @@ export const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 10 * 1024 * 1024, // 10MB limit
   }
 });
 
@@ -55,10 +41,12 @@ export const register = async (
   const hash = await hashpassword(password);
 
   const user = await User.create({ name, email, password: hash, phone });
+  const token = generatToken(user);
 
   return res.status(200).json({
     message: "User registered successfully",
-    User: {
+    token,
+    user: {
       id: user._id,
       name: user.name,
       email: user.email,
@@ -66,8 +54,10 @@ export const register = async (
       profileImage: user.profileImage,
       supervisor: user.supervisor,
       cluster: user.cluster,
-      targetInstallations: user.targetInstallations,
       startDate: user.startDate,
+      dailyTarget: user.dailyTarget,
+      weeklyTarget: user.weeklyTarget,
+      monthlyTarget: user.monthlyTarget,
     },
   });
 };
@@ -97,8 +87,10 @@ export const login = async (
       profileImage: user.profileImage,
       supervisor: user.supervisor,
       cluster: user.cluster,
-      targetInstallations: user.targetInstallations,
       startDate: user.startDate,
+      dailyTarget: user.dailyTarget,
+      weeklyTarget: user.weeklyTarget,
+      monthlyTarget: user.monthlyTarget,
     },
   });
 };
@@ -124,8 +116,10 @@ export const getProfile = async (
       profileImage: user.profileImage,
       supervisor: user.supervisor,
       cluster: user.cluster,
-      targetInstallations: user.targetInstallations,
       startDate: user.startDate,
+      dailyTarget: user.dailyTarget,
+      weeklyTarget: user.weeklyTarget,
+      monthlyTarget: user.monthlyTarget,
       createdAt: user.createdAt,
     },
   });
@@ -136,7 +130,7 @@ export const updateProfile = async (
   res: Response
 ): Promise<Response | void> => {
   const userId = req.user?.id;
-  const { name, email, phone, supervisor, cluster, targetInstallations } = req.body;
+  const { name, email, phone, supervisor, cluster, dailyTarget, weeklyTarget, monthlyTarget } = req.body;
 
   // Check if email is being changed and if it already exists
   if (email) {
@@ -154,7 +148,9 @@ export const updateProfile = async (
       ...(phone && { phone }),
       ...(supervisor !== undefined && { supervisor }),
       ...(cluster !== undefined && { cluster }),
-      ...(targetInstallations !== undefined && { targetInstallations }),
+      ...(dailyTarget !== undefined && { dailyTarget }),
+      ...(weeklyTarget !== undefined && { weeklyTarget }),
+      ...(monthlyTarget !== undefined && { monthlyTarget }),
     },
     { new: true, runValidators: true }
   ).select('-password');
@@ -171,8 +167,10 @@ export const updateProfile = async (
       profileImage: user.profileImage,
       supervisor: user.supervisor,
       cluster: user.cluster,
-      targetInstallations: user.targetInstallations,
       startDate: user.startDate,
+      dailyTarget: user.dailyTarget,
+      weeklyTarget: user.weeklyTarget,
+      monthlyTarget: user.monthlyTarget,
     },
   });
 };
@@ -183,24 +181,49 @@ export const uploadProfileImage = async (
 ): Promise<Response | void> => {
   const userId = req.user?.id;
 
+  if (!userId) {
+    throw new UnauthorizedError("User not authenticated");
+  }
+
   if (!req.file) {
     throw new BadRequestError("No image file provided");
   }
 
-  const profileImagePath = `/uploads/profile-images/${userId}/${req.file.filename}`;
+  // Get current user to check for existing profile image
+  const currentUser = await User.findById(userId);
+  if (!currentUser) {
+    throw new NotFoundError("User not found");
+  }
 
-  const user = await User.findByIdAndUpdate(
-    userId,
-    { profileImage: profileImagePath },
-    { new: true }
-  ).select('-password');
+  try {
+    // Upload new profile image to S3 and delete old one if exists
+    const uploadedImage = await ProfileImageService.replaceProfileImage(
+      req.file.buffer,
+      req.file.originalname,
+      userId,
+      currentUser.profileImageKey || undefined
+    );
 
-  if (!user) throw new NotFoundError("User not found");
+    // Update user with new profile image URL and key
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        profileImage: uploadedImage.url,
+        profileImageKey: uploadedImage.key
+      },
+      { new: true }
+    ).select('-password');
 
-  return res.status(200).json({
-    message: "Profile image uploaded successfully",
-    profileImage: profileImagePath,
-  });
+    if (!user) throw new NotFoundError("User not found");
+
+    return res.status(200).json({
+      message: "Profile image uploaded successfully",
+      profileImage: uploadedImage.url,
+    });
+  } catch (error) {
+    console.error("Error uploading profile image:", error);
+    throw new BadRequestError("Failed to upload profile image");
+  }
 };
 
 export const changePassword = async (

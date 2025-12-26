@@ -15,7 +15,7 @@ export const tokenService = {
     localStorage.removeItem(USER_KEY);
   },
 
-  getUser: (): { id: string; name: string; email: string } | null => {
+  getUser: (): any | null => {
     const userStr = localStorage.getItem(USER_KEY);
     if (!userStr) return null;
     try {
@@ -25,7 +25,7 @@ export const tokenService = {
     }
   },
 
-  setUser: (user: { id: string; name: string; email: string }): void => {
+  setUser: (user: any): void => {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   },
 };

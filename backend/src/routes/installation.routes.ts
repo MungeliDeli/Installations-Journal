@@ -7,6 +7,8 @@ import {
   getInstallations,
   updateInstallation,
   deleteInstallation,
+  getInstallationStats,
+  getDashboardStats,
 } from "../controller/installation.controller.js";
 import { installationSchema } from "../validation/installation.validation.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -28,6 +30,16 @@ router.post(
   validate(installationSchema), // Then validate other fields
   asyncHandler(createInstallation)
 );
+
+// @route   GET /api/installations/dashboard
+// @desc    Get dashboard statistics and chart data
+// @access  Private
+router.get("/dashboard", asyncHandler(getDashboardStats));
+
+// @route   GET /api/installations/stats
+// @desc    Get installation statistics by date range
+// @access  Private
+router.get("/stats", asyncHandler(getInstallationStats));
 
 // @route   GET /api/installations
 // @desc    Get all installations for the logged-in user

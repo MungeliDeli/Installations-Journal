@@ -1,6 +1,7 @@
 // src/components/ui/ImageUpload.tsx
 
 import { useState, useRef } from "react";
+import { validateImageFile } from "../../utils/validation";
 
 interface ImageUploadProps {
   images: File[];
@@ -24,36 +25,45 @@ export default function ImageUpload({
 
     const fileArray = Array.from(files);
 
-    // Filter only image files
-    const imageFiles = fileArray.filter((file) =>
-      file.type.startsWith("image/")
-    );
+    // Validate each file
+    const validImageFiles: File[] = [];
+    const errors: string[] = [];
 
-    if (imageFiles.length === 0) {
-      alert("Please select only image files");
-      return;
+    fileArray.forEach((file) => {
+      const validationError = validateImageFile(file);
+      if (validationError) {
+        errors.push(`${file.name}: ${validationError}`);
+      } else {
+        validImageFiles.push(file);
+      }
+    });
+
+    // Show errors if any
+    if (errors.length > 0) {
+      alert(`File validation errors:\n${errors.join('\n')}`);
+      if (validImageFiles.length === 0) return;
     }
 
     // Check if adding these files would exceed the limit
-    if (images.length + imageFiles.length > maxImages) {
+    if (images.length + validImageFiles.length > maxImages) {
       alert(`You can only upload up to ${maxImages} images`);
       return;
     }
 
     // Create previews
     const newPreviews: string[] = [];
-    imageFiles.forEach((file) => {
+    validImageFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         newPreviews.push(reader.result as string);
-        if (newPreviews.length === imageFiles.length) {
+        if (newPreviews.length === validImageFiles.length) {
           setPreviews([...previews, ...newPreviews]);
         }
       };
       reader.readAsDataURL(file);
     });
 
-    onImagesChange([...images, ...imageFiles]);
+    onImagesChange([...images, ...validImageFiles]);
   };
 
   const handleDrag = (e: React.DragEvent) => {

@@ -42,10 +42,23 @@ export const updateProfileSchema = Joi.object({
   cluster: Joi.string().max(50).optional().allow('').messages({
     "string.max": "Cluster name must not exceed 50 characters",
   }),
-  targetInstallations: Joi.number().integer().min(0).optional().messages({
-    "number.base": "Target installations must be a number",
-    "number.integer": "Target installations must be a whole number",
-    "number.min": "Target installations must be 0 or greater",
+  dailyTarget: Joi.number().integer().min(1).max(1000).optional().messages({
+    "number.base": "Daily target must be a number",
+    "number.integer": "Daily target must be a whole number",
+    "number.min": "Daily target must be at least 1",
+    "number.max": "Daily target must not exceed 1000",
+  }),
+  weeklyTarget: Joi.number().integer().min(1).max(1000).optional().messages({
+    "number.base": "Weekly target must be a number",
+    "number.integer": "Weekly target must be a whole number",
+    "number.min": "Weekly target must be at least 1",
+    "number.max": "Weekly target must not exceed 1000",
+  }),
+  monthlyTarget: Joi.number().integer().min(1).max(1000).optional().messages({
+    "number.base": "Monthly target must be a number",
+    "number.integer": "Monthly target must be a whole number",
+    "number.min": "Monthly target must be at least 1",
+    "number.max": "Monthly target must not exceed 1000",
   }),
 });
 

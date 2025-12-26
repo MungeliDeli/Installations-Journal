@@ -283,3 +283,220 @@ export const deleteInstallation = async (
     message: "Installation deleted successfully",
   });
 };
+
+export const getInstallationStats = async (
+  req: AuthRequest,
+  res: Response
+): Promise<Response | void> => {
+  const userId = req.user?.id;
+  const { date, type } = req.query;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Unauthorized: User not authenticated",
+    });
+  }
+
+  const targetDate = date ? new Date(date as string) : new Date();
+  let startDate: Date;
+  let endDate: Date;
+
+  switch (type) {
+    case 'daily':
+      startDate = new Date(targetDate);
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(targetDate);
+      endDate.setHours(23, 59, 59, 999);
+      break;
+    
+    case 'weekly':
+      // Week starts on Monday
+      const dayOfWeek = targetDate.getDay();
+      const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      startDate = new Date(targetDate);
+      startDate.setDate(targetDate.getDate() + mondayOffset);
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 5); // Monday to Saturday
+      endDate.setHours(23, 59, 59, 999);
+      break;
+    
+    case 'monthly':
+      startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
+      endDate = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0);
+      endDate.setHours(23, 59, 59, 999);
+      break;
+    
+    default:
+      return res.status(400).json({
+        message: "Invalid type. Must be 'daily', 'weekly', or 'monthly'",
+      });
+  }
+
+  const installations = await Installation.find({
+    createdBy: userId,
+    createdAt: {
+      $gte: startDate,
+      $lte: endDate,
+    },
+  }).sort({ createdAt: -1 });
+
+  return res.status(200).json({
+    installations,
+    count: installations.length,
+    period: {
+      start: startDate,
+      end: endDate,
+      type,
+    },
+  });
+};
+
+export const getDashboardStats = async (
+  req: AuthRequest,
+  res: Response
+): Promise<Response | void> => {
+  const userId = req.user?.id;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Unauthorized: User not authenticated",
+    });
+  }
+
+  try {
+    const now = new Date();
+    
+    // Get all time installations
+    const allTimeInstallations = await Installation.find({ createdBy: userId });
+    
+    // Today's installations
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(now);
+    todayEnd.setHours(23, 59, 59, 999);
+    
+    const todayInstallations = await Installation.find({
+      createdBy: userId,
+      createdAt: { $gte: todayStart, $lte: todayEnd }
+    });
+
+    // This week's installations (Monday to Sunday)
+    const weekStart = new Date(now);
+    const dayOfWeek = now.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    weekStart.setDate(now.getDate() + mondayOffset);
+    weekStart.setHours(0, 0, 0, 0);
+    
+    const weekInstallations = await Installation.find({
+      createdBy: userId,
+      createdAt: { $gte: weekStart }
+    });
+
+    // This month's installations
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthInstallations = await Installation.find({
+      createdBy: userId,
+      createdAt: { $gte: monthStart }
+    });
+
+    // Last 5 days data for chart
+    const last5Days = [];
+    for (let i = 4; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(now.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+      const nextDay = new Date(date);
+      nextDay.setDate(date.getDate() + 1);
+      
+      const dayInstallations = await Installation.find({
+        createdBy: userId,
+        createdAt: { $gte: date, $lt: nextDay }
+      });
+      
+      last5Days.push({
+        date: date.toISOString().split('T')[0],
+        count: dayInstallations.length,
+        label: date.toLocaleDateString('en-US', { weekday: 'short' })
+      });
+    }
+
+    // Last 5 weeks data
+    const last5Weeks = [];
+    for (let i = 4; i >= 0; i--) {
+      const weekDate = new Date(now);
+      weekDate.setDate(now.getDate() - (i * 7));
+      const weekStartDate = new Date(weekDate);
+      const dayOfWeek = weekDate.getDay();
+      const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      weekStartDate.setDate(weekDate.getDate() + mondayOffset);
+      weekStartDate.setHours(0, 0, 0, 0);
+      
+      const weekEndDate = new Date(weekStartDate);
+      weekEndDate.setDate(weekStartDate.getDate() + 6);
+      weekEndDate.setHours(23, 59, 59, 999);
+      
+      const weekInstallationsCount = await Installation.find({
+        createdBy: userId,
+        createdAt: { $gte: weekStartDate, $lte: weekEndDate }
+      });
+      
+      last5Weeks.push({
+        week: `Week ${weekStartDate.getDate()}/${weekStartDate.getMonth() + 1}`,
+        count: weekInstallationsCount.length,
+        startDate: weekStartDate.toISOString().split('T')[0]
+      });
+    }
+
+    // Last 5 months data
+    const last5Months = [];
+    for (let i = 4; i >= 0; i--) {
+      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthEndDate = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+      monthEndDate.setHours(23, 59, 59, 999);
+      
+      const monthInstallationsCount = await Installation.find({
+        createdBy: userId,
+        createdAt: { $gte: monthDate, $lte: monthEndDate }
+      });
+      
+      last5Months.push({
+        month: monthDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        count: monthInstallationsCount.length,
+        date: monthDate.toISOString().split('T')[0]
+      });
+    }
+
+    // Calculate averages
+    const avgRsrp = allTimeInstallations.length > 0 
+      ? allTimeInstallations.reduce((sum, inst) => sum + (inst.rsrp || 0), 0) / allTimeInstallations.length 
+      : 0;
+    
+    const avgSpeed = allTimeInstallations.length > 0 
+      ? allTimeInstallations.reduce((sum, inst) => sum + (inst.speed || 0), 0) / allTimeInstallations.length 
+      : 0;
+
+    return res.status(200).json({
+      stats: {
+        allTime: allTimeInstallations.length,
+        today: todayInstallations.length,
+        thisWeek: weekInstallations.length,
+        thisMonth: monthInstallations.length,
+        averages: {
+          rsrp: Math.round(avgRsrp * 100) / 100,
+          speed: Math.round(avgSpeed * 100) / 100
+        }
+      },
+      chartData: {
+        daily: last5Days,
+        weekly: last5Weeks,
+        monthly: last5Months
+      }
+    });
+  } catch (error) {
+    console.error('Dashboard stats error:', error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};

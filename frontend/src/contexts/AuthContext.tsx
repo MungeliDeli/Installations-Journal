@@ -9,8 +9,10 @@ export interface User {
   profileImage?: string;
   supervisor?: string;
   cluster?: string;
-  targetInstallations?: number;
   startDate?: string | Date;
+  dailyTarget?: number;
+  weeklyTarget?: number;
+  monthlyTarget?: number;
 }
 
 interface AuthContextType {

@@ -93,6 +93,49 @@ export const validatePassword = (password: string, isLogin: boolean = false): st
   return null;
 };
 
+// Target validation
+export const validateTarget = (target: number, type: 'daily' | 'weekly' | 'monthly'): string | null => {
+  if (target === undefined || target === null) {
+    return `${type.charAt(0).toUpperCase() + type.slice(1)} target is required`;
+  }
+
+  if (target < 1) {
+    return `${type.charAt(0).toUpperCase() + type.slice(1)} target must be at least 1`;
+  }
+
+  if (target > 1000) {
+    return `${type.charAt(0).toUpperCase() + type.slice(1)} target must not exceed 1000`;
+  }
+
+  return null;
+};
+
+// Image file validation
+export const validateImageFile = (file: File): string | null => {
+  if (!file) {
+    return "Please select an image file";
+  }
+
+  // Check file type
+  if (!file.type.startsWith('image/')) {
+    return "Please select a valid image file (JPG, PNG, GIF, etc.)";
+  }
+
+  // Check file size (10MB limit)
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  if (file.size > maxSize) {
+    return "Image size must be less than 10MB";
+  }
+
+  // Check for common image formats
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedTypes.includes(file.type.toLowerCase())) {
+    return "Please select a JPG, PNG, GIF, or WebP image";
+  }
+
+  return null;
+};
+
 // Installation form validation
 export const validateInstallationForm = (data: any): ValidationError[] => {
   const errors: ValidationError[] = [];
@@ -186,6 +229,41 @@ export const validateSignupForm = (
 
   const passwordError = validatePassword(password, false);
   if (passwordError) errors.password = passwordError;
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+};
+
+// Profile form validation
+export const validateProfileForm = (data: {
+  name: string;
+  email: string;
+  phone: string;
+  dailyTarget: number;
+  weeklyTarget: number;
+  monthlyTarget: number;
+}): ValidationResult => {
+  const errors: Record<string, string> = {};
+
+  const nameError = validateName(data.name);
+  if (nameError) errors.name = nameError;
+
+  const emailError = validateEmail(data.email);
+  if (emailError) errors.email = emailError;
+
+  const phoneError = validateZambianPhone(data.phone);
+  if (phoneError) errors.phone = phoneError;
+
+  const dailyTargetError = validateTarget(data.dailyTarget, 'daily');
+  if (dailyTargetError) errors.dailyTarget = dailyTargetError;
+
+  const weeklyTargetError = validateTarget(data.weeklyTarget, 'weekly');
+  if (weeklyTargetError) errors.weeklyTarget = weeklyTargetError;
+
+  const monthlyTargetError = validateTarget(data.monthlyTarget, 'monthly');
+  if (monthlyTargetError) errors.monthlyTarget = monthlyTargetError;
 
   return {
     isValid: Object.keys(errors).length === 0,

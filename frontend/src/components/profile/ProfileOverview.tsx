@@ -99,12 +99,53 @@ export default function ProfileOverview() {
             </p>
           </div>
           
+
+        </div>
+      </div>
+
+      {/* Performance Targets */}
+      <div className="bg-(--color-surface) border border-(--color-border) rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-(--color-text-primary) mb-4 flex items-center gap-2">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-(--color-accent-red)"
+          >
+            <path d="M3 3v18h18" />
+            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+          </svg>
+          PERFORMANCE TARGETS
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-1">
             <label className="text-xs font-semibold text-(--color-text-secondary) uppercase tracking-wide">
-              Target Installations
+              Daily Target
             </label>
             <p className="text-(--color-text-primary) font-mono text-sm bg-(--color-bg) p-3 rounded border border-(--color-border)">
-              {user?.targetInstallations || 0} installations
+              {user?.dailyTarget || 4} installations/day
+            </p>
+          </div>
+          
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-(--color-text-secondary) uppercase tracking-wide">
+              Weekly Target
+            </label>
+            <p className="text-(--color-text-primary) font-mono text-sm bg-(--color-bg) p-3 rounded border border-(--color-border)">
+              {user?.weeklyTarget || 20} installations/week
+            </p>
+          </div>
+          
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-(--color-text-secondary) uppercase tracking-wide">
+              Monthly Target
+            </label>
+            <p className="text-(--color-text-primary) font-mono text-sm bg-(--color-bg) p-3 rounded border border-(--color-border)">
+              {user?.monthlyTarget || 80} installations/month
             </p>
           </div>
         </div>

@@ -29,4 +29,5 @@ export const S3_CONFIG = {
   bucketName: AWS_S3_BUCKET_NAME,
   region: AWS_REGION,
   imageFolder: "installation-images/",
+  profileImageFolder: "profile-images/",
 };

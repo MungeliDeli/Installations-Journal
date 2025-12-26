@@ -9,12 +9,12 @@ import {
   deleteInstallation,
   getInstallationStats,
   getDashboardStats,
-} from "../controller/installation.controller.ts";
-import { installationSchema } from "../validation/installation.validation.ts";
-import { asyncHandler } from "../utils/asyncHandler.ts";
-import { validate } from "../middleware/validate.ts";
-import { authenticate } from "../middleware/auth.ts";
-import { upload } from "../middleware/upload.ts";
+} from "../controller/installation.controller.js";
+import { installationSchema } from "../validation/installation.validation.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { validate } from "../middleware/validate.js";
+import { authenticate } from "../middleware/auth.js";
+import { upload } from "../middleware/upload.js";
 
 const router = Router();
 

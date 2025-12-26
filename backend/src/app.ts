@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import authRoutes from "./routes/auth.routes.ts";
-import installationsRoutes from "./routes/installation.routes.ts";
-import userRoutes from "./routes/user.routes.ts";
-import { erroHandler, notFoundHandler } from "./middleware/errorHandler.ts";
+import authRoutes from "./routes/auth.routes.js";
+import installationsRoutes from "./routes/installation.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import { erroHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import multer from "multer";
-import { multerErrorHandler } from "./middleware/mulrerErrorHandler.ts";
+import { multerErrorHandler } from "./middleware/mulrerErrorHandler.js";
 
 const app = express();
 

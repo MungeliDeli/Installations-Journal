@@ -1,7 +1,7 @@
 import sharp from "sharp";
 import { Upload } from "@aws-sdk/lib-storage";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client, S3_CONFIG } from "../config/s3.config.ts";
+import { s3Client, S3_CONFIG } from "../config/s3.config.js";
 import { Readable } from "stream";
 
 interface ProcessedProfileImage {

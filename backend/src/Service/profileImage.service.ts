@@ -25,27 +25,31 @@ export class ProfileImageService {
    * - Convert to JPEG format
    * - Strip metadata for privacy and smaller file size
    */
-  static async processProfileImage(buffer: Buffer): Promise<ProcessedProfileImage> {
+  static async processProfileImage(
+    buffer: Buffer
+  ): Promise<ProcessedProfileImage> {
     let quality = 90;
     let processedBuffer: Buffer;
     let imageSize: number;
 
     // Create a square 400x400 profile image with proper orientation handling
+    // By default sharp strips metadata on output; avoid passing boolean to withMetadata
     let sharpInstance = sharp(buffer)
       .rotate() // Auto-rotate based on EXIF orientation data - this fixes rotation issues
       .resize(400, 400, {
         fit: "cover", // Crop to fill the square
-        position: "center"
-      })
-      .withMetadata(false); // Strip EXIF and other metadata for privacy and smaller file size
+        position: "center",
+      });
 
     // Compress until under 200kb or quality gets too low
     do {
-      processedBuffer = await sharpInstance.jpeg({ 
-        quality,
-        progressive: true, // Progressive JPEG for better loading experience
-        mozjpeg: true // Use mozjpeg encoder for better compression
-      }).toBuffer();
+      processedBuffer = await sharpInstance
+        .jpeg({
+          quality,
+          progressive: true, // Progressive JPEG for better loading experience
+          mozjpeg: true, // Use mozjpeg encoder for better compression
+        })
+        .toBuffer();
       imageSize = processedBuffer.length;
 
       if (imageSize > 200 * 1024) {
@@ -73,7 +77,9 @@ export class ProfileImageService {
     userId: string
   ): Promise<UploadedProfileImage> {
     // Create user-specific folder path
-    const key = `${S3_CONFIG.profileImageFolder}${userId}/profile-${Date.now()}.jpg`;
+    const key = `${
+      S3_CONFIG.profileImageFolder
+    }${userId}/profile-${Date.now()}.jpg`;
 
     const stream = Readable.from(processedImage.buffer);
 
@@ -124,7 +130,11 @@ export class ProfileImageService {
   ): Promise<UploadedProfileImage> {
     // Process and upload the new image
     const processedImage = await this.processProfileImage(buffer);
-    const uploadedImage = await this.uploadProfileImageToS3(processedImage, fileName, userId);
+    const uploadedImage = await this.uploadProfileImageToS3(
+      processedImage,
+      fileName,
+      userId
+    );
 
     // Delete the old image if it exists
     if (oldImageKey) {
@@ -148,7 +158,11 @@ export class ProfileImageService {
     userId: string
   ): Promise<UploadedProfileImage> {
     const processedImage = await this.processProfileImage(buffer);
-    const uploadedImage = await this.uploadProfileImageToS3(processedImage, fileName, userId);
+    const uploadedImage = await this.uploadProfileImageToS3(
+      processedImage,
+      fileName,
+      userId
+    );
     return uploadedImage;
   }
 }

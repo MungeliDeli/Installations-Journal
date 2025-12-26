@@ -12,6 +12,8 @@ export interface IUser extends Document {
   dailyTarget?: number;
   weeklyTarget?: number;
   monthlyTarget?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const userSchema = new Schema<IUser>(

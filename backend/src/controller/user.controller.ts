@@ -5,7 +5,12 @@ import {
   comparePassword,
   generatToken,
 } from "../service/auth.service.js";
-import { ConflictError, UnauthorizedError, NotFoundError, BadRequestError } from "../utils/customErrors.js";
+import {
+  ConflictError,
+  UnauthorizedError,
+  NotFoundError,
+  BadRequestError,
+} from "../utils/customErrors.js";
 import { ProfileImageService } from "../service/profileImage.service.js";
 import multer from "multer";
 
@@ -13,10 +18,10 @@ import multer from "multer";
 const storage = multer.memoryStorage();
 
 const fileFilter = (_req: any, file: any, cb: any) => {
-  if (file.mimetype.startsWith('image/')) {
+  if (file.mimetype.startsWith("image/")) {
     cb(null, true);
   } else {
-    cb(new BadRequestError('Only image files are allowed'), false);
+    cb(new BadRequestError("Only image files are allowed"), false);
   }
 };
 
@@ -25,7 +30,7 @@ export const upload = multer({
   fileFilter,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
-  }
+  },
 });
 
 export const register = async (
@@ -102,7 +107,7 @@ export const getProfile = async (
   console.log("getProfile called for user:", req.user?.id);
   const userId = req.user?.id;
 
-  const user = await User.findById(userId).select('-password');
+  const user = await User.findById(userId).select("-password");
   if (!user) throw new NotFoundError("User not found");
 
   console.log("Profile found:", user.name);
@@ -130,11 +135,23 @@ export const updateProfile = async (
   res: Response
 ): Promise<Response | void> => {
   const userId = req.user?.id;
-  const { name, email, phone, supervisor, cluster, dailyTarget, weeklyTarget, monthlyTarget } = req.body;
+  const {
+    name,
+    email,
+    phone,
+    supervisor,
+    cluster,
+    dailyTarget,
+    weeklyTarget,
+    monthlyTarget,
+  } = req.body;
 
   // Check if email is being changed and if it already exists
   if (email) {
-    const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+    const query: any = { email };
+    if (userId) query._id = { $ne: userId };
+
+    const existingUser = await User.findOne(query);
     if (existingUser) {
       throw new ConflictError("Email already exists");
     }
@@ -153,7 +170,7 @@ export const updateProfile = async (
       ...(monthlyTarget !== undefined && { monthlyTarget }),
     },
     { new: true, runValidators: true }
-  ).select('-password');
+  ).select("-password");
 
   if (!user) throw new NotFoundError("User not found");
 
@@ -209,10 +226,10 @@ export const uploadProfileImage = async (
       userId,
       {
         profileImage: uploadedImage.url,
-        profileImageKey: uploadedImage.key
+        profileImageKey: uploadedImage.key,
       },
       { new: true }
-    ).select('-password');
+    ).select("-password");
 
     if (!user) throw new NotFoundError("User not found");
 
@@ -236,7 +253,10 @@ export const changePassword = async (
   const user = await User.findById(userId);
   if (!user) throw new NotFoundError("User not found");
 
-  const isCurrentPasswordValid = await comparePassword(currentPassword, user.password);
+  const isCurrentPasswordValid = await comparePassword(
+    currentPassword,
+    user.password
+  );
   if (!isCurrentPasswordValid) {
     throw new UnauthorizedError("Current password is incorrect");
   }

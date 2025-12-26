@@ -1,6 +1,9 @@
 // src/controller/installation.controller.ts
 
-import { Installation } from "../model/installation.model.js";
+import {
+  Installation,
+ type IInstallationImage,
+} from "../model/installation.model.js";
 import { type Request, type Response } from "express";
 import { NotFoundError, ConflictError } from "../utils/customErrors.js";
 import { ImageService } from "../service/image.service.js";
@@ -30,7 +33,11 @@ export const createInstallation = async (
   } = req.body;
 
   // Validate reference field for S3 folder naming
-  if (!reference || typeof reference !== 'string' || reference.trim().length === 0) {
+  if (
+    !reference ||
+    typeof reference !== "string" ||
+    reference.trim().length === 0
+  ) {
     return res.status(400).json({
       message: "Reference field is required and must be a non-empty string",
     });
@@ -54,7 +61,7 @@ export const createInstallation = async (
   }
 
   // Process and upload images if any
-  let uploadedImages = [];
+  let uploadedImages: IInstallationImage[] = [];
 
   try {
     if (files && files.length > 0) {
@@ -113,7 +120,8 @@ export const createInstallation = async (
     // Handle unique constraint error for reference
     if (error.code === 11000 && error.keyPattern?.reference) {
       return res.status(409).json({
-        message: "Reference number already exists. Please use a unique reference.",
+        message:
+          "Reference number already exists. Please use a unique reference.",
       });
     }
 
@@ -302,14 +310,14 @@ export const getInstallationStats = async (
   let endDate: Date;
 
   switch (type) {
-    case 'daily':
+    case "daily":
       startDate = new Date(targetDate);
       startDate.setHours(0, 0, 0, 0);
       endDate = new Date(targetDate);
       endDate.setHours(23, 59, 59, 999);
       break;
-    
-    case 'weekly':
+
+    case "weekly":
       // Week starts on Monday
       const dayOfWeek = targetDate.getDay();
       const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
@@ -320,13 +328,17 @@ export const getInstallationStats = async (
       endDate.setDate(startDate.getDate() + 5); // Monday to Saturday
       endDate.setHours(23, 59, 59, 999);
       break;
-    
-    case 'monthly':
+
+    case "monthly":
       startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
-      endDate = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0);
+      endDate = new Date(
+        targetDate.getFullYear(),
+        targetDate.getMonth() + 1,
+        0
+      );
       endDate.setHours(23, 59, 59, 999);
       break;
-    
+
     default:
       return res.status(400).json({
         message: "Invalid type. Must be 'daily', 'weekly', or 'monthly'",
@@ -366,19 +378,19 @@ export const getDashboardStats = async (
 
   try {
     const now = new Date();
-    
+
     // Get all time installations
     const allTimeInstallations = await Installation.find({ createdBy: userId });
-    
+
     // Today's installations
     const todayStart = new Date(now);
     todayStart.setHours(0, 0, 0, 0);
     const todayEnd = new Date(now);
     todayEnd.setHours(23, 59, 59, 999);
-    
+
     const todayInstallations = await Installation.find({
       createdBy: userId,
-      createdAt: { $gte: todayStart, $lte: todayEnd }
+      createdAt: { $gte: todayStart, $lte: todayEnd },
     });
 
     // This week's installations (Monday to Sunday)
@@ -387,17 +399,17 @@ export const getDashboardStats = async (
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
     weekStart.setDate(now.getDate() + mondayOffset);
     weekStart.setHours(0, 0, 0, 0);
-    
+
     const weekInstallations = await Installation.find({
       createdBy: userId,
-      createdAt: { $gte: weekStart }
+      createdAt: { $gte: weekStart },
     });
 
     // This month's installations
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const monthInstallations = await Installation.find({
       createdBy: userId,
-      createdAt: { $gte: monthStart }
+      createdAt: { $gte: monthStart },
     });
 
     // Last 5 days data for chart
@@ -408,16 +420,16 @@ export const getDashboardStats = async (
       date.setHours(0, 0, 0, 0);
       const nextDay = new Date(date);
       nextDay.setDate(date.getDate() + 1);
-      
+
       const dayInstallations = await Installation.find({
         createdBy: userId,
-        createdAt: { $gte: date, $lt: nextDay }
+        createdAt: { $gte: date, $lt: nextDay },
       });
-      
+
       last5Days.push({
-        date: date.toISOString().split('T')[0],
+        date: date.toISOString().split("T")[0],
         count: dayInstallations.length,
-        label: date.toLocaleDateString('en-US', { weekday: 'short' })
+        label: date.toLocaleDateString("en-US", { weekday: "short" }),
       });
     }
 
@@ -425,26 +437,26 @@ export const getDashboardStats = async (
     const last5Weeks = [];
     for (let i = 4; i >= 0; i--) {
       const weekDate = new Date(now);
-      weekDate.setDate(now.getDate() - (i * 7));
+      weekDate.setDate(now.getDate() - i * 7);
       const weekStartDate = new Date(weekDate);
       const dayOfWeek = weekDate.getDay();
       const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
       weekStartDate.setDate(weekDate.getDate() + mondayOffset);
       weekStartDate.setHours(0, 0, 0, 0);
-      
+
       const weekEndDate = new Date(weekStartDate);
       weekEndDate.setDate(weekStartDate.getDate() + 6);
       weekEndDate.setHours(23, 59, 59, 999);
-      
+
       const weekInstallationsCount = await Installation.find({
         createdBy: userId,
-        createdAt: { $gte: weekStartDate, $lte: weekEndDate }
+        createdAt: { $gte: weekStartDate, $lte: weekEndDate },
       });
-      
+
       last5Weeks.push({
         week: `Week ${weekStartDate.getDate()}/${weekStartDate.getMonth() + 1}`,
         count: weekInstallationsCount.length,
-        startDate: weekStartDate.toISOString().split('T')[0]
+        startDate: weekStartDate.toISOString().split("T")[0],
       });
     }
 
@@ -452,29 +464,44 @@ export const getDashboardStats = async (
     const last5Months = [];
     for (let i = 4; i >= 0; i--) {
       const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const monthEndDate = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+      const monthEndDate = new Date(
+        now.getFullYear(),
+        now.getMonth() - i + 1,
+        0
+      );
       monthEndDate.setHours(23, 59, 59, 999);
-      
+
       const monthInstallationsCount = await Installation.find({
         createdBy: userId,
-        createdAt: { $gte: monthDate, $lte: monthEndDate }
+        createdAt: { $gte: monthDate, $lte: monthEndDate },
       });
-      
+
       last5Months.push({
-        month: monthDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        month: monthDate.toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        }),
         count: monthInstallationsCount.length,
-        date: monthDate.toISOString().split('T')[0]
+        date: monthDate.toISOString().split("T")[0],
       });
     }
 
     // Calculate averages
-    const avgRsrp = allTimeInstallations.length > 0 
-      ? allTimeInstallations.reduce((sum, inst) => sum + (inst.rsrp || 0), 0) / allTimeInstallations.length 
-      : 0;
-    
-    const avgSpeed = allTimeInstallations.length > 0 
-      ? allTimeInstallations.reduce((sum, inst) => sum + (inst.speed || 0), 0) / allTimeInstallations.length 
-      : 0;
+    const avgRsrp =
+      allTimeInstallations.length > 0
+        ? allTimeInstallations.reduce(
+            (sum, inst) => sum + (inst.rsrp || 0),
+            0
+          ) / allTimeInstallations.length
+        : 0;
+
+    const avgSpeed =
+      allTimeInstallations.length > 0
+        ? allTimeInstallations.reduce(
+            (sum, inst) => sum + (inst.speed || 0),
+            0
+          ) / allTimeInstallations.length
+        : 0;
 
     return res.status(200).json({
       stats: {
@@ -484,17 +511,17 @@ export const getDashboardStats = async (
         thisMonth: monthInstallations.length,
         averages: {
           rsrp: Math.round(avgRsrp * 100) / 100,
-          speed: Math.round(avgSpeed * 100) / 100
-        }
+          speed: Math.round(avgSpeed * 100) / 100,
+        },
       },
       chartData: {
         daily: last5Days,
         weekly: last5Weeks,
-        monthly: last5Months
-      }
+        monthly: last5Months,
+      },
     });
   } catch (error) {
-    console.error('Dashboard stats error:', error);
+    console.error("Dashboard stats error:", error);
     return res.status(500).json({
       message: "Internal server error",
     });

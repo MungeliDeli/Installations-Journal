@@ -104,13 +104,11 @@ export const getProfile = async (
   req: Request,
   res: Response
 ): Promise<Response | void> => {
-  console.log("getProfile called for user:", req.user?.id);
   const userId = req.user?.id;
 
   const user = await User.findById(userId).select("-password");
   if (!user) throw new NotFoundError("User not found");
 
-  console.log("Profile found:", user.name);
   return res.status(200).json({
     message: "Profile retrieved successfully",
     user: {

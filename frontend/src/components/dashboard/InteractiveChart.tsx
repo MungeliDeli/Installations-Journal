@@ -10,8 +10,6 @@ export default function InteractiveChart() {
 
   // Debug effect to track tab changes
   useEffect(() => {
-    console.log('Active tab changed to:', activeTab);
-    console.log('Dashboard data:', dashboardData);
   }, [activeTab, dashboardData]);
 
   const tabs = [
@@ -22,14 +20,10 @@ export default function InteractiveChart() {
 
   const getActiveTabData = () => {
     if (!dashboardData?.chartData) {
-      console.log('No dashboard data or chartData available');
       return [];
     }
     
-    console.log('All chart data:', dashboardData.chartData);
     const data = dashboardData.chartData[activeTab] || [];
-    console.log(`Active tab: ${activeTab}, Data:`, data);
-    console.log(`Available tabs in data:`, Object.keys(dashboardData.chartData));
     
     return data;
   };
@@ -77,7 +71,6 @@ export default function InteractiveChart() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Button clicked, setting tab to:', tab.id);
                 setActiveTab(tab.id);
               }}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 cursor-pointer select-none ${

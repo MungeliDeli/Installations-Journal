@@ -3,10 +3,10 @@
 import {
   Installation,
   type IInstallationImage,
-} from "../model/installation.model.js";
+} from "../model/installation.model.ts";
 import { type Request, type Response } from "express";
-import { NotFoundError, ConflictError } from "../utils/customErrors.js";
-import { ImageService } from "../service/image.service.js";
+import { NotFoundError, ConflictError } from "../utils/customErrors.ts";
+import { ImageService } from "../service/image.service.ts";
 
 // Extended Request interface with user
 interface AuthRequest extends Request {

@@ -2,7 +2,7 @@
 
 import {
   Installation,
- type IInstallationImage,
+  type IInstallationImage,
 } from "../model/installation.model.js";
 import { type Request, type Response } from "express";
 import { NotFoundError, ConflictError } from "../utils/customErrors.js";

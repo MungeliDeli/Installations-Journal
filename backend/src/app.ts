@@ -22,6 +22,14 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "Installations Journal API is running",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use("/api/installations", installationsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);

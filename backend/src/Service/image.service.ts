@@ -32,12 +32,14 @@ export class ImageService {
 
     const metadata = await sharp(buffer).metadata();
 
-    let sharpInstance = sharp(buffer)
-      .rotate() // Auto-rotate based on EXIF orientation data - this fixes rotation issues
-      .withMetadata(false); // Strip EXIF and other metadata for privacy and smaller file size
+    // By default sharp strips metadata when outputting; avoid passing boolean to withMetadata
+    let sharpInstance = sharp(buffer).rotate(); // Auto-rotate based on EXIF orientation data - this fixes rotation issues
 
     // Resize if image is larger than 1920px on either dimension
-    if (metadata.width && metadata.width > 1920 || metadata.height && metadata.height > 1920) {
+    if (
+      (metadata.width && metadata.width > 1920) ||
+      (metadata.height && metadata.height > 1920)
+    ) {
       sharpInstance = sharpInstance.resize(1920, 1920, {
         fit: "inside",
         withoutEnlargement: true,
@@ -46,11 +48,13 @@ export class ImageService {
 
     // Compress until under 500kb or quality gets too low
     do {
-      processedBuffer = await sharpInstance.jpeg({ 
-        quality,
-        progressive: true, // Progressive JPEG for better loading experience
-        mozjpeg: true // Use mozjpeg encoder for better compression
-      }).toBuffer();
+      processedBuffer = await sharpInstance
+        .jpeg({
+          quality,
+          progressive: true, // Progressive JPEG for better loading experience
+          mozjpeg: true, // Use mozjpeg encoder for better compression
+        })
+        .toBuffer();
       imageSize = processedBuffer.length;
 
       if (imageSize > 500 * 1024) {
@@ -79,10 +83,9 @@ export class ImageService {
   ): Promise<Uploadedimage> {
     // Sanitize reference for use in folder name
     const sanitizedReference = reference.replace(/[^a-zA-Z0-9-_]/g, "-");
-    const key = `${S3_CONFIG.imageFolder}${sanitizedReference}/${Date.now()}-${fileName.replace(
-      /\s+/g,
-      "-"
-    )}.jpg`;
+    const key = `${
+      S3_CONFIG.imageFolder
+    }${sanitizedReference}/${Date.now()}-${fileName.replace(/\s+/g, "-")}.jpg`;
 
     const stream = Readable.from(processedImage.buffer);
 
@@ -132,7 +135,11 @@ export class ImageService {
     reference: string
   ): Promise<Uploadedimage> {
     const processedImage = await this.processImage(buffer);
-    const uploadedImage = await this.uploadToS3(processedImage, fileName, reference);
+    const uploadedImage = await this.uploadToS3(
+      processedImage,
+      fileName,
+      reference
+    );
     return uploadedImage;
   }
 }

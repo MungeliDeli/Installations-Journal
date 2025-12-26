@@ -114,15 +114,6 @@ export default function NewInstallationModal({
         setUploadProgress(`Uploading ${submitData.images.length} image(s)...`);
       }
 
-      console.log("Submitting installation with data:", {
-        ...submitData,
-        images: submitData.images?.map((img) => ({
-          name: img.name,
-          size: img.size,
-          type: img.type,
-        })),
-      });
-
       await createInstallation.mutateAsync(submitData);
 
       // Close confirmation modal
@@ -222,7 +213,7 @@ export default function NewInstallationModal({
 
   return (
     <>
-      <div 
+      <div
         className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
         onClick={(e) => {
           if (e.target === e.currentTarget && !createInstallation.isPending) {
@@ -234,7 +225,6 @@ export default function NewInstallationModal({
           className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-2xl max-h-[90vh] shadow-[0_0_20px_rgba(220,38,38,0.3)] overflow-y-auto scrollbar-hide"
           onClick={(e) => e.stopPropagation()}
         >
-
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-(--color-text-primary) font-bold tracking-[1px] uppercase text-lg">
               <span className="text-(--color-accent-red)">NEW</span>{" "}

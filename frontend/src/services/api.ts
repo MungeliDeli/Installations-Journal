@@ -70,7 +70,6 @@ export const authApi = {
   },
 
   signup: async (data: SignUpData): Promise<AuthResponse> => {
-    console.log("response");
     const response = await api.post<AuthResponse>("/auth/register", data);
 
     return response.data;

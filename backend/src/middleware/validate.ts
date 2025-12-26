@@ -13,7 +13,6 @@ export const validate = (schema: Schema) => {
       abortEarly: false,
       stripUnknown: true,
     });
-    console.log("Validation result:", value);
 
     if (error) {
       const errorMessage = error.details.map((detail) => ({

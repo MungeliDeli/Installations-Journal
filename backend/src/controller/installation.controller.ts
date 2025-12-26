@@ -65,7 +65,6 @@ export const createInstallation = async (
 
   try {
     if (files && files.length > 0) {
-      console.log(`Processing ${files.length} images...`);
 
       const uploadPromises = files.map(async (file) => {
         const result = await ImageService.processAndUpload(
@@ -82,7 +81,6 @@ export const createInstallation = async (
       });
 
       uploadedImages = await Promise.all(uploadPromises);
-      console.log(`Successfully uploaded ${uploadedImages.length} images`);
     }
 
     // Create installation record with images
@@ -108,7 +106,6 @@ export const createInstallation = async (
 
     // Clean up uploaded images if installation creation fails
     if (uploadedImages.length > 0) {
-      console.log("Cleaning up uploaded images due to error...");
       try {
         const imageKeys = uploadedImages.map((img) => img.key);
         await ImageService.deleteMultipleFromS3(imageKeys);
@@ -274,11 +271,9 @@ export const deleteInstallation = async (
 
   // Delete all images from S3 before deleting the installation
   if (installation.images && installation.images.length > 0) {
-    console.log(`Deleting ${installation.images.length} images from S3...`);
     try {
       const imageKeys = installation.images.map((img) => img.key);
       await ImageService.deleteMultipleFromS3(imageKeys);
-      console.log("Images deleted successfully from S3");
     } catch (error) {
       console.error("Error deleting images from S3:", error);
       // Continue with installation deletion even if image deletion fails

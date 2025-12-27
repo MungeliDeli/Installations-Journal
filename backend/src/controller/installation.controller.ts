@@ -141,7 +141,7 @@ export const getInstallations = async (
   // Find all installations created by this user
   const installations = await Installation.find({ createdBy: userId })
     .populate("createdBy", "name email")
-    .sort({ createdAt: -1 });
+    .sort({ installedAt: -1 });
 
   return res.status(200).json({
     installations,
@@ -342,11 +342,11 @@ export const getInstallationStats = async (
 
   const installations = await Installation.find({
     createdBy: userId,
-    createdAt: {
+    installedAt: {
       $gte: startDate,
       $lte: endDate,
     },
-  }).sort({ createdAt: -1 });
+  }).sort({ installedAt: -1 });
 
   return res.status(200).json({
     installations,
@@ -385,7 +385,7 @@ export const getDashboardStats = async (
 
     const todayInstallations = await Installation.find({
       createdBy: userId,
-      createdAt: { $gte: todayStart, $lte: todayEnd },
+      installedAt: { $gte: todayStart, $lte: todayEnd },
     });
 
     // This week's installations (Monday to Sunday)
@@ -397,14 +397,14 @@ export const getDashboardStats = async (
 
     const weekInstallations = await Installation.find({
       createdBy: userId,
-      createdAt: { $gte: weekStart },
+      installedAt: { $gte: weekStart },
     });
 
     // This month's installations
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const monthInstallations = await Installation.find({
       createdBy: userId,
-      createdAt: { $gte: monthStart },
+      installedAt: { $gte: monthStart },
     });
 
     // Last 5 days data for chart
@@ -418,7 +418,7 @@ export const getDashboardStats = async (
 
       const dayInstallations = await Installation.find({
         createdBy: userId,
-        createdAt: { $gte: date, $lt: nextDay },
+        installedAt: { $gte: date, $lt: nextDay },
       });
 
       last5Days.push({
@@ -445,7 +445,7 @@ export const getDashboardStats = async (
 
       const weekInstallationsCount = await Installation.find({
         createdBy: userId,
-        createdAt: { $gte: weekStartDate, $lte: weekEndDate },
+        installedAt: { $gte: weekStartDate, $lte: weekEndDate },
       });
 
       last5Weeks.push({
@@ -468,7 +468,7 @@ export const getDashboardStats = async (
 
       const monthInstallationsCount = await Installation.find({
         createdBy: userId,
-        createdAt: { $gte: monthDate, $lte: monthEndDate },
+        installedAt: { $gte: monthDate, $lte: monthEndDate },
       });
 
       last5Months.push({
@@ -485,17 +485,17 @@ export const getDashboardStats = async (
     const avgRsrp =
       allTimeInstallations.length > 0
         ? allTimeInstallations.reduce(
-            (sum, inst) => sum + (inst.rsrp || 0),
-            0
-          ) / allTimeInstallations.length
+          (sum, inst) => sum + (inst.rsrp || 0),
+          0
+        ) / allTimeInstallations.length
         : 0;
 
     const avgSpeed =
       allTimeInstallations.length > 0
         ? allTimeInstallations.reduce(
-            (sum, inst) => sum + (inst.speed || 0),
-            0
-          ) / allTimeInstallations.length
+          (sum, inst) => sum + (inst.speed || 0),
+          0
+        ) / allTimeInstallations.length
         : 0;
 
     return res.status(200).json({

@@ -4,17 +4,21 @@ import InteractiveChart from "../components/dashboard/InteractiveChart";
 import PerformanceMetrics from "../components/dashboard/PerformanceMetrics";
 import QuickStats from "../components/dashboard/QuickStats";
 import ResponsiveButton from "../components/ui/ResponsiveButton";
+import { useState } from "react";
+import NewInstallationModal from "../components/installations/NewInstallationModal";
 
 interface DashboardPageProps {
   onMenuToggle?: () => void;
 }
 
 export default function DashboardPage({ onMenuToggle = () => {} }: DashboardPageProps) {
+  const [isNewInstallationModalOpen, setIsNewInstallationModalOpen] = useState(false);
   const headerActions = (
     <ResponsiveButton
       variant="filled"
       color="green"
       size="md"
+      onClick={() => setIsNewInstallationModalOpen(true)}
       ariaLabel="Create new installation entry"
       icon={
         <svg
@@ -35,7 +39,8 @@ export default function DashboardPage({ onMenuToggle = () => {} }: DashboardPage
   );
 
   return (
-    <div className="space-y-6">
+    <>
+      <div className="space-y-6">
       <PageHeader
         title={
           <>
@@ -63,6 +68,11 @@ export default function DashboardPage({ onMenuToggle = () => {} }: DashboardPage
           <QuickStats />
         </div>
       </div>
-    </div>
+      </div>
+      <NewInstallationModal
+        isOpen={isNewInstallationModalOpen}
+        onClose={() => setIsNewInstallationModalOpen(false)}
+      />
+    </>
   );
 }

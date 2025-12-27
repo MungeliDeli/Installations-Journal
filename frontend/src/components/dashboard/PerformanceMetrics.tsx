@@ -107,7 +107,7 @@ export default function PerformanceMetrics() {
             </div>
             
             {/* Animated background effect */}
-            <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-5 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+            {/* <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-5 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white to-transparent"></div> */}
           </div>
         );
       })}

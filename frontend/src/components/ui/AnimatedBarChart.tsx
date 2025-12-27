@@ -12,7 +12,6 @@ export default function AnimatedBarChart({ data, color, height = 200 }: Animated
   const maxValue = Math.max(...data.map(d => d.count), 1);
 
   useEffect(() => {
-    console.log('AnimatedBarChart data changed:', data);
     // Reset animation
     setAnimatedData(new Array(data.length).fill(0));
     

@@ -30,7 +30,7 @@ export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
   return (
     <>
       <div
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-(--color-sidebar-bg) border-r border-(--color-border) transform transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-(--color-sidebar-bg) border-r border-(--color-border) transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -166,7 +166,7 @@ export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
             {user && (
               <div className="mb-4 p-3 bg-(--color-surface) rounded">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-full bg-(--color-accent-red) flex items-center justify-center text-white font-semibold overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-(--color-accent-red) flex items-center justify-center text-white font-semibold text-lg overflow-hidden">
                     {getImageUrl(user.profileImage) ? (
                       <img
                         src={getImageUrl(user.profileImage)!}

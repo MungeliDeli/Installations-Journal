@@ -192,7 +192,7 @@ export default function ProfileSettings({
           {/* Current Profile Image */}
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-(--color-accent-red) flex items-center justify-center text-white text-2xl font-bold border-4 border-(--color-border) overflow-hidden">
+              <div className="w-32 h-32 rounded-full bg-(--color-accent-red) flex items-center justify-center text-white text-4xl font-bold border-4 border-(--color-border) overflow-hidden">
                 {getImageUrl(user?.profileImage) ? (
                   <img
                     src={getImageUrl(user?.profileImage)!}
@@ -223,7 +223,7 @@ export default function ProfileSettings({
             {/* Image Preview */}
             {imagePreview && (
               <div className="flex flex-col items-center gap-3">
-                <div className="w-24 h-24 rounded-full border-4 border-(--color-border) overflow-hidden">
+                <div className="w-32 h-32 rounded-full border-4 border-(--color-border) overflow-hidden">
                   <img
                     src={imagePreview}
                     alt="Preview"

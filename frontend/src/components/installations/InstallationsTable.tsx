@@ -28,12 +28,13 @@ export default function InstallationsTable({
   };
 
   const filteredAndSortedInstallations = useMemo(() => {
-    let filtered = installations;
+    // Create a copy to avoid mutating the original array
+    let filtered = [...installations];
 
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = installations.filter(
+      filtered = filtered.filter(
         (installation) =>
           installation.customer.toLowerCase().includes(query) ||
           installation.location.toLowerCase().includes(query) ||
@@ -43,36 +44,54 @@ export default function InstallationsTable({
       );
     }
 
-    // Sort
-    return filtered.sort((a, b) => {
-      let aValue: string | number;
-      let bValue: string | number;
+    // Sort the filtered array
+    filtered.sort((a, b) => {
+      let comparison = 0;
 
       switch (sortField) {
         case "date":
-          aValue = new Date(a.installedAt).getTime();
-          bValue = new Date(b.installedAt).getTime();
+          const dateA = new Date(a.installedAt);
+          const dateB = new Date(b.installedAt);
+          
+          // Handle invalid dates
+          if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) {
+            comparison = 0;
+          } else if (isNaN(dateA.getTime())) {
+            comparison = 1; // Put invalid dates at the end
+          } else if (isNaN(dateB.getTime())) {
+            comparison = -1; // Put invalid dates at the end
+          } else {
+            comparison = dateA.getTime() - dateB.getTime();
+          }
           break;
+          
         case "customer":
-          aValue = a.customer.toLowerCase();
-          bValue = b.customer.toLowerCase();
+          const customerA = (a.customer || "").toLowerCase().trim();
+          const customerB = (b.customer || "").toLowerCase().trim();
+          comparison = customerA.localeCompare(customerB);
           break;
+          
         case "location":
-          aValue = a.location.toLowerCase();
-          bValue = b.location.toLowerCase();
+          const locationA = (a.location || "").toLowerCase().trim();
+          const locationB = (b.location || "").toLowerCase().trim();
+          comparison = locationA.localeCompare(locationB);
           break;
+          
         case "speed":
-          aValue = a.speed;
-          bValue = b.speed;
+          const speedA = Number(a.speed) || 0;
+          const speedB = Number(b.speed) || 0;
+          comparison = speedA - speedB;
           break;
+          
         default:
           return 0;
       }
 
-      if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
-      if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
-      return 0;
+      // Apply sort direction
+      return sortDirection === "asc" ? comparison : -comparison;
     });
+
+    return filtered;
   }, [installations, searchQuery, sortField, sortDirection]);
 
   const formatDate = (dateString: string) => {

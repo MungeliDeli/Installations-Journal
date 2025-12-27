@@ -51,7 +51,7 @@ export default function ProfilePage({ onMenuToggle = () => {} }: ProfilePageProp
         <div className="mb-6 p-6 bg-(--color-surface) border border-(--color-border) rounded-lg">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-(--color-accent-red) flex items-center justify-center text-white text-2xl font-bold border-4 border-(--color-border) overflow-hidden">
+              <div className="w-32 h-32 rounded-full bg-(--color-accent-red) flex items-center justify-center text-white text-4xl font-bold border-4 border-(--color-border) overflow-hidden">
                 {getImageUrl(user?.profileImage) ? (
                   <img
                     src={getImageUrl(user?.profileImage)!}

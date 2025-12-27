@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
         onClose={() => setSidebarOpen(false)}
         user={user}
       />
-      <div className="flex-1 flex flex-col overflow-x-hidden">
+      <div className="flex-1 flex flex-col overflow-x-hidden lg:ml-64">
         <div className="flex-1 p-4 lg:p-6">
           {childrenWithProps}
         </div>

@@ -26,7 +26,7 @@ export default function InstallationDetailsModal({
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
@@ -34,13 +34,14 @@ export default function InstallationDetailsModal({
         }
       }}
     >
-      <div 
-        className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-2xl shadow-[0_0_20px_rgba(220,38,38,0.3)] max-h-[90vh] overflow-y-auto scrollbar-hide"
+      <div
+        className="bg-(--color-background) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-2xl  max-h-[90vh] overflow-y-auto scrollbar-hide"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-(--color-text-primary) font-bold tracking-[1px] uppercase text-lg">
-            <span className="text-(--color-accent-red)">INSTALLATION</span> DETAILS
+            <span className="text-(--color-accent-red)">INSTALLATION</span>{" "}
+            DETAILS
           </h2>
           <button
             onClick={onClose}
@@ -124,12 +125,13 @@ export default function InstallationDetailsModal({
                 </label>
                 <div className="font-mono text-sm">
                   <span
-                    className={`${installation.speed >= 50
-                      ? "text-green-400"
-                      : installation.speed >= 25
+                    className={`${
+                      installation.speed >= 50
+                        ? "text-green-400"
+                        : installation.speed >= 25
                         ? "text-yellow-400"
                         : "text-(--color-accent-red)"
-                      }`}
+                    }`}
                   >
                     {installation.speed}
                   </span>
@@ -203,13 +205,15 @@ export default function InstallationDetailsModal({
                 <div className="text-(--color-text-secondary) text-xs tracking-[1px] uppercase mb-1">
                   Speed Status
                 </div>
-                <div className={`font-mono text-sm ${
-                  installation.speed >= 50
-                    ? "text-green-400"
-                    : installation.speed >= 25
-                    ? "text-yellow-400"
-                    : "text-(--color-accent-red)"
-                }`}>
+                <div
+                  className={`font-mono text-sm ${
+                    installation.speed >= 50
+                      ? "text-green-400"
+                      : installation.speed >= 25
+                      ? "text-yellow-400"
+                      : "text-(--color-accent-red)"
+                  }`}
+                >
                   {installation.speed} Mbps
                 </div>
               </div>

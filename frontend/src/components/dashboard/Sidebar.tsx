@@ -52,23 +52,14 @@ export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
-            <div className="relative inline-flex items-center gap-3 px-5 py-4 rounded border border-[#f97373] bg-[rgba(220,38,38,0.12)] shadow-[0_0_28px_rgba(248,113,113,0.7)]">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[rgba(255,255,255,0.3)] bg-[rgba(0,0,0,0.35)] text-(--color-text-primary)">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M14.7 6.3 17 4l3 3-2.3 2.3a2 2 0 0 0-.5 1.9l.7 2.3-2.1 2.1-2.3-.7a2 2 0 0 0-1.9.5L9 19l-4-4 3.6-3.6a2 2 0 0 0 .5-1.9l-.7-2.3 2.1-2.1 2.3.7a2 2 0 0 0 1.9-.5z" />
-                </svg>
-              </div>
-              <span className="text-(--color-text-primary) text-[20px] font-extrabold tracking-[0.25em] uppercase">
-                SYS/INTL
+            <div className="flex items-center gap-4 px-2 py-3">
+              <img
+                src="/STRATUM_LOGO.png"
+                alt="STRATUM Logo"
+                className="h-12 w-12 object-contain"
+              />
+              <span className="text-(--color-text-primary) text-[24px] font-extrabold tracking-[0.25em] uppercase">
+                STRATUM
               </span>
             </div>
           </div>
@@ -83,7 +74,7 @@ export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
                 }}
                 className={`w-full mb-3 px-4 py-3 rounded flex items-center gap-3 text-left transition-all duration-200 ${
                   isActive(item.path)
-                    ? "bg-[rgba(220,38,38,0.95)] border border-[#f97373] shadow-[0_0_24px_rgba(248,113,113,0.7)] text-white"
+                    ? "bg-(--color-sidebar-active) border border-(--color-border) text-white"
                     : "border border-transparent text-(--color-text-secondary) hover:bg-(--color-sidebar-hover) hover:text-(--color-text-primary)"
                 }`}
               >
@@ -174,12 +165,18 @@ export default function Sidebar({ isOpen, onClose, user }: SidebarProps) {
                         className="w-full h-full rounded-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          target.nextElementSibling!.textContent = user.name.charAt(0).toUpperCase();
+                          target.style.display = "none";
+                          target.nextElementSibling!.textContent = user.name
+                            .charAt(0)
+                            .toUpperCase();
                         }}
                       />
                     ) : null}
-                    <span className={getImageUrl(user.profileImage) ? 'hidden' : 'block'}>
+                    <span
+                      className={
+                        getImageUrl(user.profileImage) ? "hidden" : "block"
+                      }
+                    >
                       {user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>

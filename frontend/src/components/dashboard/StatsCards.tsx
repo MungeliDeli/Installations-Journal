@@ -54,7 +54,7 @@ export default function StatsCards() {
         {[...Array(4)].map((_, index) => (
           <div
             key={index}
-            className="bg-(--color-surface) border-l-4 border-(--color-accent-red) rounded p-4 relative shadow-[0_0_10px_rgba(220,38,38,0.2)] animate-pulse"
+            className="bg-(--color-surface) border-l-4 border-(--color-accent-red) rounded p-4 relative  animate-pulse"
           >
             <div className="h-4 bg-(--color-surface-secondary) rounded mb-3"></div>
             <div className="h-8 bg-(--color-surface-secondary) rounded mb-2"></div>
@@ -142,7 +142,7 @@ export default function StatsCards() {
       {cards.map((card, index) => (
         <div
           key={index}
-          className="bg-(--color-surface) border-l-4 border-(--color-accent-red) rounded p-4 relative shadow-[0_0_10px_rgba(220,38,38,0.2)] hover:shadow-[0_0_20px_rgba(220,38,38,0.3)] transition-all duration-300 group"
+          className="bg-(--color-surface) border-l-4 border-(--color-accent-red) rounded p-4 relative  transition-all duration-300 group"
         >
           <div className="absolute top-4 right-4 text-(--color-text-muted) group-hover:text-(--color-accent-red) transition-colors duration-300">
             {card.icon}

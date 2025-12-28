@@ -11,8 +11,11 @@ interface DashboardPageProps {
   onMenuToggle?: () => void;
 }
 
-export default function DashboardPage({ onMenuToggle = () => {} }: DashboardPageProps) {
-  const [isNewInstallationModalOpen, setIsNewInstallationModalOpen] = useState(false);
+export default function DashboardPage({
+  onMenuToggle = () => {},
+}: DashboardPageProps) {
+  const [isNewInstallationModalOpen, setIsNewInstallationModalOpen] =
+    useState(false);
   const headerActions = (
     <ResponsiveButton
       variant="filled"
@@ -34,40 +37,40 @@ export default function DashboardPage({ onMenuToggle = () => {} }: DashboardPage
         </svg>
       }
     >
-      NEW INSTALLATION ENTRY
+      NEW INSTALLATION 
     </ResponsiveButton>
   );
 
   return (
     <>
       <div className="space-y-6">
-      <PageHeader
-        title={
-          <>
-            <span className="text-(--color-accent-red)">CONTROL</span>{" "}
-            <span className="text-(--color-text-primary)">PANEL</span>
-          </>
-        }
-        subtitle="REAL-TIME SYSTEM OVERVIEW"
-        onMenuToggle={onMenuToggle}
-        actions={headerActions}
-      />
-      
-      {/* Main Stats Cards */}
-      <StatsCards />
-      
-      {/* Interactive Chart */}
-      <InteractiveChart />
-      
-      {/* Performance Metrics and Quick Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <PerformanceMetrics />
+        <PageHeader
+          title={
+            <>
+              <span className="text-(--color-accent-red)">CONTROL</span>{" "}
+              <span className="text-(--color-text-primary)">PANEL</span>
+            </>
+          }
+          subtitle="REAL-TIME SYSTEM OVERVIEW"
+          onMenuToggle={onMenuToggle}
+          actions={headerActions}
+        />
+
+        {/* Main Stats Cards */}
+        <StatsCards />
+
+        {/* Interactive Chart */}
+        <InteractiveChart />
+
+        {/* Performance Metrics and Quick Stats */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <PerformanceMetrics />
+          </div>
+          <div>
+            <QuickStats />
+          </div>
         </div>
-        <div>
-          <QuickStats />
-        </div>
-      </div>
       </div>
       <NewInstallationModal
         isOpen={isNewInstallationModalOpen}

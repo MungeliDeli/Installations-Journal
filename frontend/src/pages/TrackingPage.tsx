@@ -19,7 +19,9 @@ interface UserTargets {
 
 type TabType = "daily" | "weekly" | "monthly";
 
-export default function TrackingPage({ onMenuToggle = () => {} }: TrackingPageProps) {
+export default function TrackingPage({
+  onMenuToggle = () => {},
+}: TrackingPageProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>("daily");
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -28,7 +30,8 @@ export default function TrackingPage({ onMenuToggle = () => {} }: TrackingPagePr
     weeklyTarget: 20,
     monthlyTarget: 80,
   });
-  const [selectedInstallation, setSelectedInstallation] = useState<Installation | null>(null);
+  const [selectedInstallation, setSelectedInstallation] =
+    useState<Installation | null>(null);
 
   // Use the custom hook for fetching stats
   const {
@@ -175,7 +178,7 @@ export default function TrackingPage({ onMenuToggle = () => {} }: TrackingPagePr
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded text-sm font-semibold tracking-wide uppercase transition-all ${
                 activeTab === tab
-                  ? "bg-(--color-accent-red) text-white border border-(--color-accent-red) shadow-[0_0_20px_rgba(220,38,38,0.3)]"
+                  ? "bg-(--color-accent-red) text-white border border-(--color-accent-red) "
                   : "bg-(--color-surface) text-(--color-text-secondary) border border-(--color-border) hover:bg-(--color-sidebar-hover)"
               }`}
             >
@@ -301,7 +304,7 @@ export default function TrackingPage({ onMenuToggle = () => {} }: TrackingPagePr
           </div>
           <div className="w-full bg-(--color-border) rounded-full h-3">
             <div
-              className="bg-(--color-accent-red) h-3 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(220,38,38,0.5)]"
+              className="bg-(--color-accent-red) h-3 rounded-full transition-all duration-300 "
               style={{ width: `${getProgressPercentage()}%` }}
             />
           </div>
@@ -318,7 +321,7 @@ export default function TrackingPage({ onMenuToggle = () => {} }: TrackingPagePr
 
       {/* Installations Table */}
       {isLoading ? (
-        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center ">
           <div className="flex items-center justify-center gap-3">
             <svg
               width="20"
@@ -337,7 +340,7 @@ export default function TrackingPage({ onMenuToggle = () => {} }: TrackingPagePr
           </div>
         </div>
       ) : error ? (
-        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center ">
           <div className="flex items-center justify-center gap-3 mb-4">
             <svg
               width="20"

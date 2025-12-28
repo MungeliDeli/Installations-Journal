@@ -4,7 +4,7 @@ export default function DailyTargetModule() {
   const percentage = Math.round((current / target) * 100);
 
   return (
-    <div className="bg-(--color-surface) rounded p-6 border border-(--color-border) shadow-[0_0_10px_rgba(220,38,38,0.2)]">
+    <div className="bg-(--color-surface) rounded p-6 border border-(--color-border) ">
       <div className="flex items-center gap-2 mb-4">
         <svg
           width="18"
@@ -48,7 +48,7 @@ export default function DailyTargetModule() {
         Status: On Track (Target: {target})
       </p>
 
-      <button className="w-full bg-(--color-accent-red) text-(--color-text-primary) px-4 py-3 rounded font-semibold text-sm uppercase tracking-wide shadow-[0_0_15px_rgba(220,38,38,0.4)] hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-shadow">
+      <button className="w-full bg-(--color-accent-red) text-(--color-text-primary) px-4 py-3 rounded font-semibold text-sm uppercase tracking-wide">
         VIEW TARGET SETTINGS
       </button>
     </div>

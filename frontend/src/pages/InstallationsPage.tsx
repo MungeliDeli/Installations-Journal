@@ -16,12 +16,17 @@ interface InstallationsPageProps {
   onMenuToggle?: () => void;
 }
 
-export default function InstallationsPage({ onMenuToggle = () => {} }: InstallationsPageProps) {
+export default function InstallationsPage({
+  onMenuToggle = () => {},
+}: InstallationsPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [isNewInstallationModalOpen, setIsNewInstallationModalOpen] = useState(false);
-  const [selectedInstallation, setSelectedInstallation] = useState<Installation | null>(null);
-  const [installationToDelete, setInstallationToDelete] = useState<Installation | null>(null);
+  const [isNewInstallationModalOpen, setIsNewInstallationModalOpen] =
+    useState(false);
+  const [selectedInstallation, setSelectedInstallation] =
+    useState<Installation | null>(null);
+  const [installationToDelete, setInstallationToDelete] =
+    useState<Installation | null>(null);
   const [notification, setNotification] = useState<{
     isOpen: boolean;
     type: "success" | "error";
@@ -54,7 +59,7 @@ export default function InstallationsPage({ onMenuToggle = () => {} }: Installat
     // Close any open modals
     setSelectedInstallation(null);
     setInstallationToDelete(null);
-    
+
     setNotification({
       isOpen: true,
       type: "success",
@@ -126,7 +131,7 @@ export default function InstallationsPage({ onMenuToggle = () => {} }: Installat
       />
 
       <div className="mb-6">
-        <SearchBar 
+        <SearchBar
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="SEARCH CUSTOMER, LOCATION, OR DATE..."
@@ -134,7 +139,7 @@ export default function InstallationsPage({ onMenuToggle = () => {} }: Installat
       </div>
 
       {isLoading ? (
-        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center ">
           <div className="flex items-center justify-center gap-3">
             <svg
               width="20"
@@ -153,7 +158,7 @@ export default function InstallationsPage({ onMenuToggle = () => {} }: Installat
           </div>
         </div>
       ) : error ? (
-        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+        <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-8 text-center ">
           <div className="flex items-center justify-center gap-3 mb-4">
             <svg
               width="20"
@@ -181,7 +186,6 @@ export default function InstallationsPage({ onMenuToggle = () => {} }: Installat
           installations={installations}
           searchQuery={searchQuery}
           onInstallationClick={handleInstallationClick}
-
         />
       )}
 
@@ -215,7 +219,7 @@ export default function InstallationsPage({ onMenuToggle = () => {} }: Installat
         type={notification.type}
         title={notification.title}
         message={notification.message}
-        onClose={() => setNotification(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setNotification((prev) => ({ ...prev, isOpen: false }))}
       />
     </>
   );

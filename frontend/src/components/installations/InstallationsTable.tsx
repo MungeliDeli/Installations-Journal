@@ -52,7 +52,7 @@ export default function InstallationsTable({
         case "date":
           const dateA = new Date(a.installedAt);
           const dateB = new Date(b.installedAt);
-          
+
           // Handle invalid dates
           if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) {
             comparison = 0;
@@ -64,25 +64,25 @@ export default function InstallationsTable({
             comparison = dateA.getTime() - dateB.getTime();
           }
           break;
-          
+
         case "customer":
           const customerA = (a.customer || "").toLowerCase().trim();
           const customerB = (b.customer || "").toLowerCase().trim();
           comparison = customerA.localeCompare(customerB);
           break;
-          
+
         case "location":
           const locationA = (a.location || "").toLowerCase().trim();
           const locationB = (b.location || "").toLowerCase().trim();
           comparison = locationA.localeCompare(locationB);
           break;
-          
+
         case "speed":
           const speedA = Number(a.speed) || 0;
           const speedB = Number(b.speed) || 0;
           comparison = speedA - speedB;
           break;
-          
+
         default:
           return 0;
       }
@@ -95,17 +95,26 @@ export default function InstallationsTable({
   }, [installations, searchQuery, sortField, sortDirection]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).replace(/\//g, "-");
+    return new Date(dateString)
+      .toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, "-");
   };
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) {
       return (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M8 9l4-4 4 4" />
           <path d="M16 15l-4 4-4-4" />
         </svg>
@@ -113,18 +122,32 @@ export default function InstallationsTable({
     }
 
     return sortDirection === "asc" ? (
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M8 15l4-4 4 4" />
       </svg>
     ) : (
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M8 9l4 4 4-4" />
       </svg>
     );
   };
 
   return (
-    <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg shadow-[0_0_20px_rgba(220,38,38,0.3)] overflow-hidden">
+    <div className="bg-(--color-background) border border-(--color-accent-red) rounded-lg  overflow-hidden">
       <div className="p-4 border-b border-(--color-border)">
         <div className="flex items-center gap-2">
           <svg

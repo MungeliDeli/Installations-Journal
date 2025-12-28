@@ -10,7 +10,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-md shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+      <div className="bg-(--color-background) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-md ">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-(--color-text-primary) font-bold tracking-[1px] uppercase text-lg">
             <span className="text-(--color-accent-red)">FILTER</span> OPTIONS
@@ -52,7 +52,9 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               </span>
             </div>
             <p className="text-(--color-text-secondary) text-xs tracking-[0.5px]">
-              Advanced filtering options will be implemented here. This includes date ranges, status filters, location filters, and speed thresholds.
+              Advanced filtering options will be implemented here. This includes
+              date ranges, status filters, location filters, and speed
+              thresholds.
             </p>
           </div>
 

@@ -222,7 +222,7 @@ export default function NewInstallationModal({
         }}
       >
         <div
-          className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-2xl max-h-[90vh] shadow-[0_0_20px_rgba(220,38,38,0.3)] overflow-y-auto scrollbar-hide"
+          className="bg-(--color-background) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-2xl max-h-[90vh]  overflow-y-auto scrollbar-hide"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between mb-6">

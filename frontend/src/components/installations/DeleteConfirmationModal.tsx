@@ -32,7 +32,7 @@ export default function DeleteConfirmationModal({
   if (!isOpen || !installation) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget && !deleteInstallation.isPending) {
@@ -40,8 +40,8 @@ export default function DeleteConfirmationModal({
         }
       }}
     >
-      <div 
-        className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-md shadow-[0_0_20px_rgba(220,38,38,0.3)]"
+      <div
+        className="bg-(--color-background) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-md "
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 mb-4">
@@ -70,24 +70,37 @@ export default function DeleteConfirmationModal({
 
         <div className="mb-6">
           <p className="text-(--color-text-secondary) text-sm tracking-[0.5px] mb-3">
-            Are you sure you want to delete this installation? This action cannot be undone and will also delete all associated images from storage.
+            Are you sure you want to delete this installation? This action
+            cannot be undone and will also delete all associated images from
+            storage.
           </p>
-          
+
           <div className="p-3 bg-(--color-background) rounded border border-(--color-border)">
             <div className="text-(--color-text-primary) font-semibold text-sm mb-1">
               {installation.customer}
             </div>
             <div className="text-(--color-text-secondary) text-xs mb-2">
-              {new Date(installation.installedAt).toLocaleDateString()} • {installation.location}
+              {new Date(installation.installedAt).toLocaleDateString()} •{" "}
+              {installation.location}
             </div>
             {installation.images && installation.images.length > 0 && (
               <div className="flex items-center gap-2 text-(--color-accent-red) text-xs">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                   <circle cx="9" cy="9" r="2" />
                   <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                 </svg>
-                <span>{installation.images.length} image(s) will be permanently deleted</span>
+                <span>
+                  {installation.images.length} image(s) will be permanently
+                  deleted
+                </span>
               </div>
             )}
           </div>

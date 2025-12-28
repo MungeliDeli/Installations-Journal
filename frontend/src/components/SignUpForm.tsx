@@ -88,7 +88,7 @@ export default function SignUpForm() {
           className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
             fieldErrors.name
               ? "border-(--color-accent-red)"
-              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+              : "border-(--color-border) focus:border-(--color-accent-red) "
           }`}
           required
         />
@@ -114,7 +114,7 @@ export default function SignUpForm() {
           className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
             fieldErrors.email
               ? "border-(--color-accent-red)"
-              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+              : "border-(--color-border) focus:border-(--color-accent-red) "
           }`}
           required
         />
@@ -140,7 +140,7 @@ export default function SignUpForm() {
           className={`bg-(--color-background) border rounded px-4 py-3 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
             fieldErrors.phone
               ? "border-(--color-accent-red)"
-              : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+              : "border-(--color-border) focus:border-(--color-accent-red) "
           }`}
           required
         />
@@ -167,7 +167,7 @@ export default function SignUpForm() {
             className={`bg-(--color-background) border rounded px-4 py-3 pr-20 text-(--color-text-primary) text-sm outline-none transition-colors placeholder:text-(--color-text-muted) ${
               fieldErrors.password
                 ? "border-(--color-accent-red)"
-                : "border-(--color-border) focus:border-(--color-accent-red) focus:shadow-[0_0_8px_rgba(220,38,38,0.2)]"
+                : "border-(--color-border) focus:border-(--color-accent-red) "
             }`}
             required
           />
@@ -219,7 +219,7 @@ export default function SignUpForm() {
       <button
         type="submit"
         disabled={signupMutation.isPending}
-        className="w-full px-6 py-3.5 border-none rounded text-sm font-bold tracking-[1.5px] uppercase cursor-pointer flex items-center justify-center transition-all mt-2 bg-(--color-success) text-(--color-text-primary) shadow-[0_0_15px_rgba(34,197,94,0.4)] hover:bg-[#16a34a] hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full px-6 py-3.5 border-none rounded text-sm font-bold tracking-[1.5px] uppercase cursor-pointer flex items-center justify-center transition-all mt-2 bg-(--color-success) text-(--color-text-primary) disabled:opacity-60 disabled:cursor-not-allowed"
       >
         <svg
           width="20"

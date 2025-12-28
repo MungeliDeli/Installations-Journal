@@ -10,7 +10,7 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
     >
       <div
-        className={`absolute top-0.5 left-0.5 w-4 h-4 sm:top-1 sm:left-1 sm:w-5 sm:h-5 bg-(--color-accent-red) rounded-full transition-transform duration-300 ease-in-out shadow-[0_0_8px_rgba(220,38,38,0.4)] ${
+        className={`absolute top-0.5 left-0.5 w-4 h-4 sm:top-1 sm:left-1 sm:w-5 sm:h-5 bg-(--color-accent-red) rounded-full transition-transform duration-300 ease-in-out  ${
           theme === "dark" ? "translate-x-0" : "translate-x-5 sm:translate-x-7"
         }`}
       >

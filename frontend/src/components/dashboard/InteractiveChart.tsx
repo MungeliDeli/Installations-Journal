@@ -39,7 +39,7 @@ export default function InteractiveChart() {
 
   if (isLoading) {
     return (
-      <div className="bg-(--color-surface) rounded-lg p-6 shadow-[0_0_10px_rgba(220,38,38,0.2)]">
+      <div className="bg-(--color-surface) rounded-lg p-6 ">
         <div className="animate-pulse">
           <div className="h-6 bg-(--color-surface-secondary) rounded mb-4"></div>
           <div className="flex space-x-4 mb-6">
@@ -54,7 +54,7 @@ export default function InteractiveChart() {
   }
 
   return (
-    <div className="bg-(--color-surface) rounded-lg p-6 shadow-[0_0_10px_rgba(220,38,38,0.2)] hover:shadow-[0_0_20px_rgba(220,38,38,0.3)] transition-all duration-300">
+    <div className="bg-(--color-surface) rounded-lg p-6 ">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-bold text-(--color-text-primary) mb-1">
@@ -75,8 +75,8 @@ export default function InteractiveChart() {
               }}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 cursor-pointer select-none ${
                 activeTab === tab.id
-                  ? 'bg-(--color-accent-red) text-white shadow-[0_0_10px_rgba(220,38,38,0.3)]'
-                  : 'text-(--color-text-secondary) hover:text-(--color-text-primary) hover:bg-(--color-surface) hover:shadow-md hover:outline hover:outline-2 hover:outline-(--color-accent-red) hover:outline-offset-1'
+                  ? 'bg-(--color-accent-red) text-white '
+                  : 'text-(--color-text-secondary) hover:text-(--color-text-primary) hover:bg-(--color-surface)  hover:outline hover:outline-2 hover:outline-(--color-accent-red) hover:outline-offset-1'
               }`}
             >
               {tab.label}

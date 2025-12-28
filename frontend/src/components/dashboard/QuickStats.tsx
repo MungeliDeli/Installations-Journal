@@ -7,7 +7,7 @@ export default function QuickStats() {
 
   if (isLoading) {
     return (
-      <div className="bg-(--color-surface) rounded-lg p-6 shadow-[0_0_10px_rgba(220,38,38,0.2)] animate-pulse">
+      <div className="bg-(--color-surface) rounded-lg p-6  animate-pulse">
         <div className="h-6 bg-(--color-surface-secondary) rounded mb-4"></div>
         <div className="space-y-3">
           {[...Array(4)].map((_, i) => (
@@ -56,7 +56,7 @@ export default function QuickStats() {
   ];
 
   return (
-    <div className="bg-(--color-surface) rounded-lg p-6 shadow-[0_0_10px_rgba(220,38,38,0.2)] hover:shadow-[0_0_20px_rgba(220,38,38,0.3)] transition-all duration-300 border border-(--color-border)">
+    <div className="bg-(--color-surface) rounded-lg p-6  transition-all duration-300 border border-(--color-border)">
       <div className="flex items-center mb-4">
         <svg
           width="20"

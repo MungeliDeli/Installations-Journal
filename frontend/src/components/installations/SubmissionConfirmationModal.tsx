@@ -21,7 +21,7 @@ export default function SubmissionConfirmationModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 z-60 flex items-center justify-center p-4">
-      <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-md shadow-[0_0_30px_rgba(220,38,38,0.4)]">
+      <div className="bg-(--color-surface) border border-(--color-accent-red) rounded-lg p-6 w-full max-w-md ">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-3 bg-(--color-accent-red)/10 rounded-full">
             <svg

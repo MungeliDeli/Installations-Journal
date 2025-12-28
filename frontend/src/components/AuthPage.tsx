@@ -212,21 +212,19 @@ export default function AuthPage() {
         <div className="flex gap-0 mb-8 border-b border-(--color-border)">
           <button
             onClick={() => setActiveTab("login")}
-            className={`flex-1 py-3 bg-transparent border-none text-(--color-text-secondary) text-sm font-semibold tracking-[1px] uppercase cursor-pointer transition-colors border-b-2 ${
-              activeTab === "login"
-                ? "text-(--color-accent-red) border-(--color-accent-red)"
-                : "border-transparent hover:text-(--color-text-primary)"
-            }`}
+            className={`flex-1 py-3 bg-transparent border-none text-(--color-text-secondary) text-sm font-semibold tracking-[1px] uppercase cursor-pointer transition-colors border-b-2 ${activeTab === "login"
+              ? "text-(--color-accent-red) border-(--color-accent-red)"
+              : "border-transparent hover:text-(--color-text-primary)"
+              }`}
           >
             LOGIN
           </button>
           <button
             onClick={() => setActiveTab("signup")}
-            className={`flex-1 py-3 bg-transparent border-none text-(--color-text-secondary) text-sm font-semibold tracking-[1px] uppercase cursor-pointer transition-colors border-b-2 ${
-              activeTab === "signup"
-                ? "text-(--color-accent-red) border-(--color-accent-red)"
-                : "border-transparent hover:text-(--color-text-primary)"
-            }`}
+            className={`flex-1 py-3 bg-transparent border-none text-(--color-text-secondary) text-sm font-semibold tracking-[1px] uppercase cursor-pointer transition-colors border-b-2 ${activeTab === "signup"
+              ? "text-(--color-accent-red) border-(--color-accent-red)"
+              : "border-transparent hover:text-(--color-text-primary)"
+              }`}
           >
             SIGN UP
           </button>
@@ -238,7 +236,7 @@ export default function AuthPage() {
       </div>
 
       {/* Custom CSS for animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes scan-vertical {
           0% {
             top: -2px;

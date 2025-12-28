@@ -218,7 +218,7 @@ export default function Layout({ children }: LayoutProps) {
       )}
 
       {/* Custom CSS for animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes scan-vertical {
           0% {
             top: -2px;

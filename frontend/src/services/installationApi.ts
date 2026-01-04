@@ -13,40 +13,46 @@ export const installationApi = {
   create: async (
     data: CreateInstallationData
   ): Promise<InstallationResponse> => {
-    // Create FormData for multipart/form-data
-    const formData = new FormData();
+    try {
+      // Create FormData for multipart/form-data
+      const formData = new FormData();
 
-    // Append all text fields
-    formData.append("customer", data.customer);
-    formData.append("phone", data.phone);
-    formData.append("location", data.location);
-    formData.append("reference", data.reference);
-    formData.append("installedAt", data.installedAt);
-    formData.append("speed", data.speed.toString());
-    formData.append("rsrp", data.rsrp.toString());
+      // Append all text fields
+      formData.append("customer", data.customer);
+      formData.append("phone", data.phone);
+      formData.append("location", data.location);
+      formData.append("reference", data.reference);
+      formData.append("installedAt", data.installedAt);
+      formData.append("speed", data.speed.toString());
+      formData.append("rsrp", data.rsrp.toString());
 
-    if (data.notes) {
-      formData.append("notes", data.notes);
-    }
-
-    // Append images if any
-    if (data.images && data.images.length > 0) {
-      data.images.forEach((image) => {
-        formData.append("images", image);
-      });
-    }
-
-    const response = await api.post<InstallationResponse>(
-      "/installations",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      if (data.notes) {
+        formData.append("notes", data.notes);
       }
-    );
 
-    return response.data;
+      // Append images if any
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((image) => {
+          formData.append("images", image);
+        });
+      }
+
+      console.log("Sending installation request to backend...");
+      const response = await api.post<InstallationResponse>(
+        "/installations",
+        formData
+      );
+
+      console.log("Backend response:", response);
+      console.log("Response status:", response.status);
+      console.log("Response data:", response.data);
+
+      return response.data;
+    } catch (error: any) {
+      console.error("API Error in installationApi.create:", error);
+      console.error("Error response:", error.response);
+      throw error;
+    }
   },
 
   // Get all installations for the current user

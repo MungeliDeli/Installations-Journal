@@ -1,6 +1,6 @@
 // src/components/ui/ImageUpload.tsx
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { validateImageFile } from "../../utils/validation";
 
 interface ImageUploadProps {
@@ -19,6 +19,13 @@ export default function ImageUpload({
   const [previews, setPreviews] = useState<string[]>([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync previews with images prop - reset previews when images are cleared
+  useEffect(() => {
+    if (images.length === 0) {
+      setPreviews([]);
+    }
+  }, [images.length]);
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
@@ -248,10 +255,10 @@ export default function ImageUpload({
               {/* Image Info Overlay */}
               <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-2">
                 <p className="text-[10px] text-white font-medium truncate">
-                  {images[index].name}
+                  {images[index]?.name || 'Unknown'}
                 </p>
                 <p className="text-[9px] text-white/70">
-                  {formatFileSize(images[index].size)}
+                  {images[index] ? formatFileSize(images[index].size) : '0 KB'}
                 </p>
               </div>
 

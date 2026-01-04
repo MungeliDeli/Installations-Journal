@@ -114,7 +114,9 @@ export default function NewInstallationModal({
         setUploadProgress(`Uploading ${submitData.images.length} image(s)...`);
       }
 
-      await createInstallation.mutateAsync(submitData);
+      console.log("Submitting installation data:", submitData);
+      const result = await createInstallation.mutateAsync(submitData);
+      console.log("Installation creation result:", result);
 
       // Close confirmation modal
       setShowConfirmation(false);
@@ -152,10 +154,51 @@ export default function NewInstallationModal({
     } catch (error: any) {
       console.error("Error creating installation:", error);
       console.error("Error details:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
+        message: error?.message,
+        response: error?.response?.data,
+        status: error?.response?.status,
+        stack: error?.stack,
       });
+
+      // Check if the installation was actually created despite the error
+      if (error?.response?.status === 201 || error?.response?.data?.installation) {
+        console.log("Installation was created successfully despite error");
+        
+        // Close confirmation modal
+        setShowConfirmation(false);
+        setUploadProgress(null);
+
+        // Show success notification
+        setNotification({
+          isOpen: true,
+          type: "success",
+          title: "Installation Created",
+          message:
+            formData.images && formData.images.length > 0
+              ? `Installation created successfully with ${formData.images.length} image(s).`
+              : "The installation has been successfully created.",
+        });
+
+        // Reset form
+        setFormData({
+          customer: "",
+          phone: "",
+          location: "",
+          reference: "",
+          installedAt: "",
+          speed: 0,
+          notes: "",
+          rsrp: 0,
+          images: [],
+        });
+        setErrors([]);
+
+        // Close modal after a short delay
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+        return;
+      }
 
       // Close confirmation modal
       setShowConfirmation(false);
@@ -164,18 +207,25 @@ export default function NewInstallationModal({
       // Parse error message
       let errorMessage = "Failed to create installation. Please try again.";
 
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.data?.errors) {
-        // Handle validation errors
-        const errors = error.response.data.errors;
-        if (Array.isArray(errors)) {
-          errorMessage = errors
-            .map((e: any) => e.message || e.field)
-            .join(", ");
+      try {
+        if (error?.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error?.response?.data?.errors) {
+          // Handle validation errors
+          const errors = error.response.data.errors;
+          if (Array.isArray(errors)) {
+            errorMessage = errors
+              .map((e: any) => e.message || e.field || String(e))
+              .join(", ");
+          }
+        } else if (error?.message) {
+          errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
         }
-      } else if (error.message) {
-        errorMessage = error.message;
+      } catch (parseError) {
+        console.error("Error parsing error message:", parseError);
+        errorMessage = "An unexpected error occurred. Please try again.";
       }
 
       // Show error notification

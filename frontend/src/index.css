@@ -3,8 +3,8 @@
 @layer theme {
   :root {
     /* Primary Brand Colors */
-    --color-primary: #004d61; /* Red accent */
-    --color-primary-hover: #004d61;
+    --color-primary: #22c55e; /* Red accent */
+    --color-primary-hover: #22c55e;
     --color-success: #22c55e; /* Green for online/success states */
     --color-warning: #eab308; /* Yellow for warnings */
 
@@ -17,7 +17,7 @@
 
     /* Borders & Accents */
     --color-border: #2d3748; /* Subtle borders */
-    --color-accent-red: #004d61; /* Red accents for borders/highlights */
+    --color-accent-red: #22c55e; /* Red accents for borders/highlights */
 
     /* Text Colors */
     --color-text-primary: #f9fafb; /* White text */
@@ -30,7 +30,7 @@
 
     /* Sidebar */
     --color-sidebar-bg: #121212;
-    --color-sidebar-active: #004d61;
+    --color-sidebar-active: #22c55e;
     --color-sidebar-hover: #2e2e2e;
   }
 
